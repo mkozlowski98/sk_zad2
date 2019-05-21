@@ -5,13 +5,15 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <inttypes.h>
 
 #include "err.h"
+#include "structures.h"
 
 #define MAX_SPACE 52428800
 #define TIMEOUT 5
 
-struct parameters {
+struct server_param {
   char *mcast_addr;
   in_port_t cmd_port;
   unsigned long long max_space;
@@ -19,7 +21,7 @@ struct parameters {
   unsigned int timeout;
 };
 
-bool parse_arg(int argc, char **argv, struct parameters *parameters) {
+bool parse_arg(int argc, char **argv, struct server_param *parameters) {
   int opt, g = 0, p = 0, f = 0;
   int timeout;
 
@@ -41,10 +43,10 @@ bool parse_arg(int argc, char **argv, struct parameters *parameters) {
         parameters->shrd_fldr = optarg;
         break;
       case 't':
-        timeout = (int) atoi(optarg);
+        timeout = atoi(optarg);
         if (timeout < 0 || timeout > 300)
           return false;
-        parameters->timeout = timeout;
+        parameters->timeout = (unsigned int) timeout;
         break;
       case '?':
         printf("unknown parameter\n");
@@ -59,7 +61,7 @@ bool parse_arg(int argc, char **argv, struct parameters *parameters) {
 
 int main(int argc, char *argv[]) {
   /* structure for arguments */
-  struct parameters parameters;
+  struct server_param parameters;
   parameters.max_space = MAX_SPACE;
   parameters.timeout = TIMEOUT;
 
@@ -67,6 +69,8 @@ int main(int argc, char *argv[]) {
   int sock;
   struct sockaddr_in local_addr;
   struct ip_mreq ip_mreq;
+
+  /* variables for communication */
 
   /* parsing program's arguments */
   bool ret = parse_arg(argc, argv, &parameters);
@@ -93,6 +97,29 @@ int main(int argc, char *argv[]) {
   if (bind(sock, (struct sockaddr *)&local_addr, sizeof(local_addr)) < 0)
     syserr("bind");
 
+  struct simpl_cmd message;
+  ssize_t len, prev_len, remains;
+  prev_len = 0; // number of bytes already in the buffer
+  do {
+    remains = sizeof(message) - prev_len; // number of bytes to be read
+    len = read(sock, ((char*)&message) + prev_len, remains);
+    if (len < 0)
+      syserr("reading from client socket");
+    else if (len>0) {
+      printf("read %zd bytes from socket\n", len);
+      prev_len += len;
 
-  return 0;
+      if (prev_len == sizeof(message)) {
+        // we have received a whole structure
+        printf("received message %s from seq: %" PRIu64 "\n", message.cmd, be64toh(message.cmd_seq));
+        prev_len = 0;
+      }
+    }
+  } while (len > 0);
+
+  if (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, (void*)&ip_mreq, sizeof ip_mreq) < 0)
+    syserr("setsockopt");
+
+  close(sock);
+  exit(EXIT_SUCCESS);
 }

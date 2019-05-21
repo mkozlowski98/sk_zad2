@@ -15,28 +15,28 @@ The C compiler identification is GNU, found in "/home/maciek/studies/4_sem/sik/z
 Determining if the C compiler works passed with the following output:
 Change Dir: /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_b0fa2/fast"
-/usr/bin/make -f CMakeFiles/cmTC_b0fa2.dir/build.make CMakeFiles/cmTC_b0fa2.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_1c7b0/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1c7b0.dir/build.make CMakeFiles/cmTC_1c7b0.dir/build
 make[1]: Wejście do katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_b0fa2.dir/testCCompiler.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_b0fa2.dir/testCCompiler.c.o   -c /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_b0fa2
-/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b0fa2.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_b0fa2.dir/testCCompiler.c.o  -o cmTC_b0fa2 
+Building C object CMakeFiles/cmTC_1c7b0.dir/testCCompiler.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_1c7b0.dir/testCCompiler.c.o   -c /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_1c7b0
+/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1c7b0.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_1c7b0.dir/testCCompiler.c.o  -o cmTC_1c7b0 
 make[1]: Opuszczenie katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_3630e/fast"
-/usr/bin/make -f CMakeFiles/cmTC_3630e.dir/build.make CMakeFiles/cmTC_3630e.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_ca256/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ca256.dir/build.make CMakeFiles/cmTC_ca256.dir/build
 make[1]: Wejście do katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_3630e.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_3630e.dir/CMakeCCompilerABI.c.o   -c /opt/clion-2018.2.6/bin/cmake/linux/share/cmake-3.12/Modules/CMakeCCompilerABI.c
-Linking C executable cmTC_3630e
-/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3630e.dir/link.txt --verbose=1
-/usr/bin/cc     -v CMakeFiles/cmTC_3630e.dir/CMakeCCompilerABI.c.o  -o cmTC_3630e 
+Building C object CMakeFiles/cmTC_ca256.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_ca256.dir/CMakeCCompilerABI.c.o   -c /opt/clion-2018.2.6/bin/cmake/linux/share/cmake-3.12/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_ca256
+/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ca256.dir/link.txt --verbose=1
+/usr/bin/cc     -v CMakeFiles/cmTC_ca256.dir/CMakeCCompilerABI.c.o  -o cmTC_ca256 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper
@@ -48,9 +48,9 @@ Thread model: posix
 gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3630e' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccNmYqqG.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_3630e /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_3630e.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3630e' '-mtune=generic' '-march=x86-64'
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_ca256' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccxtDRZv.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_ca256 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_ca256.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_ca256' '-mtune=generic' '-march=x86-64'
 make[1]: Opuszczenie katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
@@ -58,14 +58,14 @@ Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_3630e/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_3630e.dir/build.make CMakeFiles/cmTC_3630e.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_ca256/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_ca256.dir/build.make CMakeFiles/cmTC_ca256.dir/build]
   ignore line: [make[1]: Wejście do katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_3630e.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTC_3630e.dir/CMakeCCompilerABI.c.o   -c /opt/clion-2018.2.6/bin/cmake/linux/share/cmake-3.12/Modules/CMakeCCompilerABI.c]
-  ignore line: [Linking C executable cmTC_3630e]
-  ignore line: [/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3630e.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc     -v CMakeFiles/cmTC_3630e.dir/CMakeCCompilerABI.c.o  -o cmTC_3630e ]
+  ignore line: [Building C object CMakeFiles/cmTC_ca256.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTC_ca256.dir/CMakeCCompilerABI.c.o   -c /opt/clion-2018.2.6/bin/cmake/linux/share/cmake-3.12/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_ca256]
+  ignore line: [/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ca256.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc     -v CMakeFiles/cmTC_ca256.dir/CMakeCCompilerABI.c.o  -o cmTC_ca256 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper]
@@ -77,13 +77,13 @@ Parsed C implicit link information from above output:
   ignore line: [gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3630e' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccNmYqqG.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_3630e /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_3630e.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_ca256' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccxtDRZv.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_ca256 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_ca256.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccNmYqqG.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccxtDRZv.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -102,7 +102,7 @@ Parsed C implicit link information from above output:
     arg [-znow] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_3630e] ==> ignore
+    arg [cmTC_ca256] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o] ==> ignore
@@ -114,7 +114,7 @@ Parsed C implicit link information from above output:
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/7/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../..]
-    arg [CMakeFiles/cmTC_3630e.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_ca256.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--push-state] ==> ignore
     arg [--as-needed] ==> ignore
@@ -146,14 +146,14 @@ Parsed C implicit link information from above output:
 Detecting C [-std=c11] compiler features compiled with the following output:
 Change Dir: /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_64e28/fast"
-/usr/bin/make -f CMakeFiles/cmTC_64e28.dir/build.make CMakeFiles/cmTC_64e28.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_be335/fast"
+/usr/bin/make -f CMakeFiles/cmTC_be335.dir/build.make CMakeFiles/cmTC_be335.dir/build
 make[1]: Wejście do katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_64e28.dir/feature_tests.c.o
-/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_64e28.dir/feature_tests.c.o   -c /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/feature_tests.c
-Linking C executable cmTC_64e28
-/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_64e28.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_64e28.dir/feature_tests.c.o  -o cmTC_64e28 
+Building C object CMakeFiles/cmTC_be335.dir/feature_tests.c.o
+/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_be335.dir/feature_tests.c.o   -c /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/feature_tests.c
+Linking C executable cmTC_be335
+/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_be335.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_be335.dir/feature_tests.c.o  -o cmTC_be335 
 make[1]: Opuszczenie katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
@@ -166,14 +166,14 @@ make[1]: Opuszczenie katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-d
 Detecting C [-std=c99] compiler features compiled with the following output:
 Change Dir: /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_116d6/fast"
-/usr/bin/make -f CMakeFiles/cmTC_116d6.dir/build.make CMakeFiles/cmTC_116d6.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_94799/fast"
+/usr/bin/make -f CMakeFiles/cmTC_94799.dir/build.make CMakeFiles/cmTC_94799.dir/build
 make[1]: Wejście do katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_116d6.dir/feature_tests.c.o
-/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_116d6.dir/feature_tests.c.o   -c /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/feature_tests.c
-Linking C executable cmTC_116d6
-/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_116d6.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_116d6.dir/feature_tests.c.o  -o cmTC_116d6 
+Building C object CMakeFiles/cmTC_94799.dir/feature_tests.c.o
+/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_94799.dir/feature_tests.c.o   -c /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/feature_tests.c
+Linking C executable cmTC_94799
+/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_94799.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_94799.dir/feature_tests.c.o  -o cmTC_94799 
 make[1]: Opuszczenie katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
@@ -186,14 +186,14 @@ make[1]: Opuszczenie katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-d
 Detecting C [-std=c90] compiler features compiled with the following output:
 Change Dir: /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_c0cc2/fast"
-/usr/bin/make -f CMakeFiles/cmTC_c0cc2.dir/build.make CMakeFiles/cmTC_c0cc2.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_ba2d4/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ba2d4.dir/build.make CMakeFiles/cmTC_ba2d4.dir/build
 make[1]: Wejście do katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_c0cc2.dir/feature_tests.c.o
-/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_c0cc2.dir/feature_tests.c.o   -c /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/feature_tests.c
-Linking C executable cmTC_c0cc2
-/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c0cc2.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_c0cc2.dir/feature_tests.c.o  -o cmTC_c0cc2 
+Building C object CMakeFiles/cmTC_ba2d4.dir/feature_tests.c.o
+/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_ba2d4.dir/feature_tests.c.o   -c /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/feature_tests.c
+Linking C executable cmTC_ba2d4
+/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ba2d4.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_ba2d4.dir/feature_tests.c.o  -o cmTC_ba2d4 
 make[1]: Opuszczenie katalogu '/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
