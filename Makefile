@@ -1,4 +1,4 @@
-TARGETS = netstore-server
+TARGETS = netstore-server netstore-client
 
 CC = gcc
 CFLAGS = -Wall -Wextra -O2
@@ -8,7 +8,9 @@ all: $(TARGETS)
 
 netstore-server: netstore-server.o err.o
 
+netstore-client: netstore-client.o err.o
+
 .PHONY: clean
 
 clean:
-	rm -r $(TARGETS) *.o *~
+	rm -r $(TARGETS) *.o 

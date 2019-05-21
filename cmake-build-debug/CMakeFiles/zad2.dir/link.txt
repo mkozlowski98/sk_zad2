@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/zad2.dir/netstore-server.c.o CMakeFiles/zad2.dir/netstore-client.c.o  -o zad2 
