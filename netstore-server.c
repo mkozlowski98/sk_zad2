@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <inttypes.h>
 
 #include "err.h"
@@ -66,9 +68,11 @@ int main(int argc, char *argv[]) {
   parameters.timeout = TIMEOUT;
 
   /* variables and structures describing socket */
-  int sock;
+  int sock, optval;
   struct sockaddr_in local_addr;
+  struct sockaddr_in client_addr;
   struct ip_mreq ip_mreq;
+  socklen_t client_addr_len;
 
   /* variables for communication */
 
@@ -89,6 +93,9 @@ int main(int argc, char *argv[]) {
     syserr("inet_atom");
   if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (void *)&ip_mreq, sizeof(ip_mreq)) < 0)
     syserr("setsockopt");
+  optval = 1;
+  if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void *)&optval, sizeof optval) < 0)
+    syserr("setsockopt");
 
   /* attach to local address and port */
   local_addr.sin_family = AF_INET;
@@ -99,23 +106,35 @@ int main(int argc, char *argv[]) {
 
   struct simpl_cmd message;
   ssize_t len, prev_len, remains;
-  prev_len = 0; // number of bytes already in the buffer
-  do {
-    remains = sizeof(message) - prev_len; // number of bytes to be read
-    len = read(sock, ((char*)&message) + prev_len, remains);
-    if (len < 0)
-      syserr("reading from client socket");
-    else if (len>0) {
-      printf("read %zd bytes from socket\n", len);
-      prev_len += len;
 
-      if (prev_len == sizeof(message)) {
-        // we have received a whole structure
-        printf("received message %s from seq: %" PRIu64 "\n", message.cmd, be64toh(message.cmd_seq));
-        prev_len = 0;
+  for (;;) {
+    client_addr_len = (socklen_t) sizeof(client_addr);
+
+    prev_len = 0; // number of bytes already in the buffer
+    do {
+      remains = sizeof(message) - prev_len; // number of bytes to be read
+      len = recvfrom(sock, (char *)&message + prev_len, remains, 0, (struct sockaddr *) &client_addr, &client_addr_len);
+      if (len < 0)
+        syserr("reading from client socket");
+      else if (len > 0) {
+        printf("read %zd bytes from socket\n", len);
+        prev_len += len;
+
+        if (prev_len == sizeof(message)) {
+          // we have received a whole structure
+          printf("received message %s from seq: %" PRIu64 "\n", message.cmd, be64toh(message.cmd_seq));
+          printf("ip address: %s and port num:%d\n", inet_ntoa(client_addr.sin_addr), client_addr.sin_port);
+          strncpy(message.cmd, "GOOD DAY", 10);
+          if (sendto(sock, (void *)&message, prev_len, 0, (struct sockaddr *)&client_addr, client_addr_len) != prev_len)
+            syserr("sendto");
+          printf("sent");
+          prev_len = 0;
+        }
       }
-    }
-  } while (len > 0);
+    } while (len > 0);
+
+
+  }
 
   if (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, (void*)&ip_mreq, sizeof ip_mreq) < 0)
     syserr("setsockopt");

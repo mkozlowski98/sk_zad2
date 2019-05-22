@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <inttypes.h>
 
 #include "err.h"
 #include "structures.h"
@@ -60,6 +61,7 @@ int main (int argc, char *argv[]) {
   parameters.timeout = TIMEOUT;
 
   int sock, optval;
+  struct sockaddr_in local_addr;
   struct sockaddr_in remote_addr;
 
   struct simpl_cmd message;
@@ -83,25 +85,33 @@ int main (int argc, char *argv[]) {
   if (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_TTL, (void*)&optval, sizeof optval) < 0)
     syserr("setsockopt multicast ttl");
 
+  local_addr.sin_family = AF_INET;
+  local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  local_addr.sin_port = htons(0);
+  if (bind(sock, (struct sockaddr *)&local_addr, sizeof local_addr) < 0)
+    syserr("bind");
+
   remote_addr.sin_family = AF_INET;
   remote_addr.sin_port = htons(parameters.cmd_port);
   if (inet_aton(parameters.mcast_addr, &remote_addr.sin_addr) == 0)
     syserr("inet_aton");
-  if (connect(sock, (struct sockaddr *)&remote_addr, sizeof remote_addr) < 0)
-    syserr("connect");
+//  if (connect(sock, (struct sockaddr *)&remote_addr, sizeof remote_addr) < 0)
+//    syserr("connect");
 
-
-//  message.cmd = malloc(10 * sizeof(char));
-//  message.data = malloc(0 * sizeof(char));
   strncpy(message.cmd, "HELLO", 10);
   message.cmd_seq = htobe64(cmd_seq);
   len = sizeof(message);
-  printf("%ld\n", len);
-  if (write(sock, &message, len) != len)
+  if (sendto(sock, &message, len, 0, (struct sockaddr *)&remote_addr, sizeof remote_addr) != len)
     syserr("write");
 
-//  free(message.cmd);
-//  free(message.data);
+  for (int i = 0; i < 2; i++) {
+    len = read(sock, ((char*)&message), len);
+    if (len < 0)
+      syserr("reading from client socket");
+    printf("read %zd bytes from socket\n", len);
+    printf("received message %s from seq: %" PRIu64 "\n", message.cmd, be64toh(message.cmd_seq));
+  }
+
 
   close(sock);
   exit(EXIT_SUCCESS);
