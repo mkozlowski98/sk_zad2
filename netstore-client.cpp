@@ -1,13 +1,10 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include <iostream>
+#include <getopt.h>
+#include <cstring>
 #include <unistd.h>
-#include <time.h>
-#include <string.h>
-#include <arpa/inet.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <sys/socket.h>
-#include <inttypes.h>
 
 #include "err.h"
 #include "structures.h"
@@ -51,33 +48,19 @@ bool parse_arg(int argc, char *argv[], struct client_param *parameters) {
     }
   }
 
-  if (g == 0 || p == 0 || o == 0)
+  if (g * p * o == 0)
     return false;
   return true;
 }
 
-int main (int argc, char *argv[]) {
-  struct client_param parameters;
-  parameters.timeout = TIMEOUT;
-
-  int sock, optval;
+int open_socket() {
+  int sock, optval = 1;
   struct sockaddr_in local_addr;
-  struct sockaddr_in remote_addr;
-
-  struct simpl_cmd message;
-  uint64_t cmd_seq = 2;
-  ssize_t len;
-
-  if (parse_arg(argc, argv, &parameters))
-    printf("%s, %d, %d\n", parameters.mcast_addr, parameters.cmd_port, parameters.timeout);
-  else
-    printf("arguments' error\n");
 
   sock = socket(AF_INET, SOCK_DGRAM, 0);
   if (sock < 0)
     syserr("socket");
 
-  optval = 1;
   if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void*)&optval, sizeof optval) < 0)
     syserr("setsockopt broadcast");
 
@@ -91,29 +74,51 @@ int main (int argc, char *argv[]) {
   if (bind(sock, (struct sockaddr *)&local_addr, sizeof local_addr) < 0)
     syserr("bind");
 
-  remote_addr.sin_family = AF_INET;
-  remote_addr.sin_port = htons(parameters.cmd_port);
-  if (inet_aton(parameters.mcast_addr, &remote_addr.sin_addr) == 0)
-    syserr("inet_aton");
-//  if (connect(sock, (struct sockaddr *)&remote_addr, sizeof remote_addr) < 0)
-//    syserr("connect");
+  return sock;
+}
 
-  strncpy(message.cmd, "HELLO", 10);
-  message.cmd_seq = htobe64(cmd_seq);
-  len = sizeof(message);
-  if (sendto(sock, &message, len, 0, (struct sockaddr *)&remote_addr, sizeof remote_addr) != len)
-    syserr("write");
+int main(int argc, char *argv[]) {
+  /* structure for arguments */
+  struct client_param parameters;
+  parameters.timeout = TIMEOUT;
 
-  for (int i = 0; i < 2; i++) {
-    len = read(sock, ((char*)&message), len);
-    if (len < 0)
-      syserr("reading from client socket");
-    printf("read %zd bytes from socket\n", len);
-    printf("received message %s from seq: %" PRIu64 "\n", message.cmd, be64toh(message.cmd_seq));
+  /* variables and structures describing socket */
+  int sock;
+  struct sockaddr_in remote_addr;
+  socklen_t remote_addr_len;
+
+  /* variables for sending messages */
+  struct simpl_cmd simpl_cmd;
+  uint64_t cmd_seq = 2;
+  ssize_t len = sizeof(simpl_cmd);
+  struct cmplx_cmd cmplx_cmd;
+
+  /* parsing program's arguments */
+  if (!parse_arg(argc, argv, &parameters)) {
+    std::cout << "Usage: ./netstore-client -g mcast_addr -p port -o path_to_dir [-t timeout]\n";
+    fatal("arguments");
   }
 
+  sock = open_socket();
+
+  remote_addr.sin_family = AF_INET;
+  remote_addr.sin_port = htons(parameters.cmd_port);
+  if (inet_aton(parameters.mcast_addr, &(remote_addr.sin_addr)) == 0)
+    syserr("inet_aton");
+  if (connect(sock, (struct sockaddr *)&remote_addr, sizeof remote_addr) < 0)
+    syserr("connect");
+
+  strncpy(simpl_cmd.cmd, "HELLO", 10);
+  simpl_cmd.cmd_seq = htobe64(cmd_seq);
+
+  remote_addr_len = (socklen_t) sizeof(remote_addr);
+  if (sendto(sock, &simpl_cmd, len, 0, (struct sockaddr *)&remote_addr, remote_addr_len) != len)
+    syserr("write");
+
+  if (read(sock, (char*)&cmplx_cmd, sizeof(cmplx_cmd)) < 0)
+    syserr("reading from client socket");
+  std::cout << "received message " << cmplx_cmd.cmd << "from: " <<  be64toh(cmplx_cmd.cmd_seq) << "\n";
 
   close(sock);
   exit(EXIT_SUCCESS);
 }
-
