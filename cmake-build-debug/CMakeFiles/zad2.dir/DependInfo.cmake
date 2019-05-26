@@ -1,16 +1,17 @@
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "C"
+  "CXX"
   )
 # The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_C
-  "/home/maciek/studies/4_sem/sik/zad2/netstore-client.c" "/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-client.c.o"
-  "/home/maciek/studies/4_sem/sik/zad2/netstore-server.c" "/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-server.c.o"
+set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/maciek/studies/4_sem/sik/zad2/netstore-client.cpp" "/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-client.cpp.o"
+  "/home/maciek/studies/4_sem/sik/zad2/netstore-server.cpp" "/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-server.cpp.o"
+  "/home/maciek/studies/4_sem/sik/zad2/structures.cpp" "/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/structures.cpp.o"
   )
-set(CMAKE_C_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
-set(CMAKE_C_TARGET_INCLUDE_PATH
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
   )
 
 # Targets to which this target links.

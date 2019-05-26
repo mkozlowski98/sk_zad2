@@ -57,45 +57,60 @@ include CMakeFiles/zad2.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/zad2.dir/flags.make
 
-CMakeFiles/zad2.dir/netstore-server.c.o: CMakeFiles/zad2.dir/flags.make
-CMakeFiles/zad2.dir/netstore-server.c.o: ../netstore-server.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/zad2.dir/netstore-server.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/zad2.dir/netstore-server.c.o   -c /home/maciek/studies/4_sem/sik/zad2/netstore-server.c
+CMakeFiles/zad2.dir/netstore-server.cpp.o: CMakeFiles/zad2.dir/flags.make
+CMakeFiles/zad2.dir/netstore-server.cpp.o: ../netstore-server.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/zad2.dir/netstore-server.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/zad2.dir/netstore-server.cpp.o -c /home/maciek/studies/4_sem/sik/zad2/netstore-server.cpp
 
-CMakeFiles/zad2.dir/netstore-server.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/zad2.dir/netstore-server.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/maciek/studies/4_sem/sik/zad2/netstore-server.c > CMakeFiles/zad2.dir/netstore-server.c.i
+CMakeFiles/zad2.dir/netstore-server.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/zad2.dir/netstore-server.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/maciek/studies/4_sem/sik/zad2/netstore-server.cpp > CMakeFiles/zad2.dir/netstore-server.cpp.i
 
-CMakeFiles/zad2.dir/netstore-server.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/zad2.dir/netstore-server.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/maciek/studies/4_sem/sik/zad2/netstore-server.c -o CMakeFiles/zad2.dir/netstore-server.c.s
+CMakeFiles/zad2.dir/netstore-server.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/zad2.dir/netstore-server.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/maciek/studies/4_sem/sik/zad2/netstore-server.cpp -o CMakeFiles/zad2.dir/netstore-server.cpp.s
 
-CMakeFiles/zad2.dir/netstore-client.c.o: CMakeFiles/zad2.dir/flags.make
-CMakeFiles/zad2.dir/netstore-client.c.o: ../netstore-client.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/zad2.dir/netstore-client.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/zad2.dir/netstore-client.c.o   -c /home/maciek/studies/4_sem/sik/zad2/netstore-client.c
+CMakeFiles/zad2.dir/structures.cpp.o: CMakeFiles/zad2.dir/flags.make
+CMakeFiles/zad2.dir/structures.cpp.o: ../structures.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/zad2.dir/structures.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/zad2.dir/structures.cpp.o -c /home/maciek/studies/4_sem/sik/zad2/structures.cpp
 
-CMakeFiles/zad2.dir/netstore-client.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/zad2.dir/netstore-client.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/maciek/studies/4_sem/sik/zad2/netstore-client.c > CMakeFiles/zad2.dir/netstore-client.c.i
+CMakeFiles/zad2.dir/structures.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/zad2.dir/structures.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/maciek/studies/4_sem/sik/zad2/structures.cpp > CMakeFiles/zad2.dir/structures.cpp.i
 
-CMakeFiles/zad2.dir/netstore-client.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/zad2.dir/netstore-client.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/maciek/studies/4_sem/sik/zad2/netstore-client.c -o CMakeFiles/zad2.dir/netstore-client.c.s
+CMakeFiles/zad2.dir/structures.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/zad2.dir/structures.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/maciek/studies/4_sem/sik/zad2/structures.cpp -o CMakeFiles/zad2.dir/structures.cpp.s
+
+CMakeFiles/zad2.dir/netstore-client.cpp.o: CMakeFiles/zad2.dir/flags.make
+CMakeFiles/zad2.dir/netstore-client.cpp.o: ../netstore-client.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/zad2.dir/netstore-client.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/zad2.dir/netstore-client.cpp.o -c /home/maciek/studies/4_sem/sik/zad2/netstore-client.cpp
+
+CMakeFiles/zad2.dir/netstore-client.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/zad2.dir/netstore-client.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/maciek/studies/4_sem/sik/zad2/netstore-client.cpp > CMakeFiles/zad2.dir/netstore-client.cpp.i
+
+CMakeFiles/zad2.dir/netstore-client.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/zad2.dir/netstore-client.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/maciek/studies/4_sem/sik/zad2/netstore-client.cpp -o CMakeFiles/zad2.dir/netstore-client.cpp.s
 
 # Object files for target zad2
 zad2_OBJECTS = \
-"CMakeFiles/zad2.dir/netstore-server.c.o" \
-"CMakeFiles/zad2.dir/netstore-client.c.o"
+"CMakeFiles/zad2.dir/netstore-server.cpp.o" \
+"CMakeFiles/zad2.dir/structures.cpp.o" \
+"CMakeFiles/zad2.dir/netstore-client.cpp.o"
 
 # External object files for target zad2
 zad2_EXTERNAL_OBJECTS =
 
-zad2: CMakeFiles/zad2.dir/netstore-server.c.o
-zad2: CMakeFiles/zad2.dir/netstore-client.c.o
+zad2: CMakeFiles/zad2.dir/netstore-server.cpp.o
+zad2: CMakeFiles/zad2.dir/structures.cpp.o
+zad2: CMakeFiles/zad2.dir/netstore-client.cpp.o
 zad2: CMakeFiles/zad2.dir/build.make
 zad2: CMakeFiles/zad2.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable zad2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable zad2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/zad2.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

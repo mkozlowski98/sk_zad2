@@ -6,9 +6,10 @@ LFLAGS = -Wall
 
 all: $(TARGETS)
 
-netstore-server: netstore-server.o err.o
+netstore-server: netstore-server.o err.o structures.o
 
-netstore-client: netstore-client.o err.o
+netstore-client: netstore-client.o err.o structures.o
+
 .PHONY: clean
 
 clean:

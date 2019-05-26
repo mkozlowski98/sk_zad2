@@ -123,59 +123,86 @@ zad2/fast:
 	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/build
 .PHONY : zad2/fast
 
-netstore-client.o: netstore-client.c.o
+netstore-client.o: netstore-client.cpp.o
 
 .PHONY : netstore-client.o
 
 # target to build an object file
-netstore-client.c.o:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.c.o
-.PHONY : netstore-client.c.o
+netstore-client.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.cpp.o
+.PHONY : netstore-client.cpp.o
 
-netstore-client.i: netstore-client.c.i
+netstore-client.i: netstore-client.cpp.i
 
 .PHONY : netstore-client.i
 
 # target to preprocess a source file
-netstore-client.c.i:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.c.i
-.PHONY : netstore-client.c.i
+netstore-client.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.cpp.i
+.PHONY : netstore-client.cpp.i
 
-netstore-client.s: netstore-client.c.s
+netstore-client.s: netstore-client.cpp.s
 
 .PHONY : netstore-client.s
 
 # target to generate assembly for a file
-netstore-client.c.s:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.c.s
-.PHONY : netstore-client.c.s
+netstore-client.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.cpp.s
+.PHONY : netstore-client.cpp.s
 
-netstore-server.o: netstore-server.c.o
+netstore-server.o: netstore-server.cpp.o
 
 .PHONY : netstore-server.o
 
 # target to build an object file
-netstore-server.c.o:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.c.o
-.PHONY : netstore-server.c.o
+netstore-server.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.cpp.o
+.PHONY : netstore-server.cpp.o
 
-netstore-server.i: netstore-server.c.i
+netstore-server.i: netstore-server.cpp.i
 
 .PHONY : netstore-server.i
 
 # target to preprocess a source file
-netstore-server.c.i:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.c.i
-.PHONY : netstore-server.c.i
+netstore-server.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.cpp.i
+.PHONY : netstore-server.cpp.i
 
-netstore-server.s: netstore-server.c.s
+netstore-server.s: netstore-server.cpp.s
 
 .PHONY : netstore-server.s
 
 # target to generate assembly for a file
-netstore-server.c.s:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.c.s
-.PHONY : netstore-server.c.s
+netstore-server.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.cpp.s
+.PHONY : netstore-server.cpp.s
+
+structures.o: structures.cpp.o
+
+.PHONY : structures.o
+
+# target to build an object file
+structures.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/structures.cpp.o
+.PHONY : structures.cpp.o
+
+structures.i: structures.cpp.i
+
+.PHONY : structures.i
+
+# target to preprocess a source file
+structures.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/structures.cpp.i
+.PHONY : structures.cpp.i
+
+structures.s: structures.cpp.s
+
+.PHONY : structures.s
+
+# target to generate assembly for a file
+structures.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/structures.cpp.s
+.PHONY : structures.cpp.s
 
 # Help Target
 help:
@@ -192,6 +219,9 @@ help:
 	@echo "... netstore-server.o"
 	@echo "... netstore-server.i"
 	@echo "... netstore-server.s"
+	@echo "... structures.o"
+	@echo "... structures.i"
+	@echo "... structures.s"
 .PHONY : help
 
 
