@@ -1,7 +1,7 @@
 #include "netstore-client.h"
 #include "err.h"
 
-Client::Client(struct client_param parameters, uint64_t _seq): parameters(parameters), sock(), cmd_seq(_seq) {}
+Client::Client(struct client_param parameters, uint64_t _seq): parameters(parameters), cmd_seq(_seq), sock {} {}
 
 void Client::connect() {
   sock.enable_broadcasting();

@@ -1,6 +1,7 @@
 #ifndef ZAD2_STRUCTURES_H
 #define ZAD2_STRUCTURES_H
 
+#include <vector>
 #include <cstring>
 #include <getopt.h>
 #include <iostream>

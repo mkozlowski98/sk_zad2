@@ -3,22 +3,29 @@
 
 Server::Server(struct server_param _parameters): parameters(_parameters), sock() {}
 
+Server::~Server() {
+  files_list.clear();
+  files_list.shrink_to_fit();
+}
+
 void Server::listen() {
+  list_files();
+
   connect();
 
-  std::cout << sock.sock_no << "\n";
+  std::cout << "Listening\n";
 
-  Simpl_cmd simpl_cmd{};
+  Cmplx_cmd cmplx_cmd{};
 
   struct sockaddr_in addr {};
   std::memset(&addr, 0, sizeof addr);
 
-  receive(sock.sock_no, addr, simpl_cmd);
+  receive(sock.sock_no, addr, cmplx_cmd);
 
-  std::cout << simpl_cmd.cmd << " " << be64toh(simpl_cmd.cmd_seq) << "\n";
+  std::cout << cmplx_cmd.cmd << " " << be64toh(cmplx_cmd.cmd_seq) << "\n";
 
-  if (send(sock.sock_no, addr, Cmplx_cmd(cmd_message[1], be64toh(simpl_cmd.cmd_seq), parameters.max_space, parameters.mcast_addr)) < 0)
-    syserr("send in server");
+  if (strcmp(cmplx_cmd.cmd, cmd_message[0]) == 0)
+    hello(be64toh(cmplx_cmd.cmd_seq), addr);
 
   close(sock.sock_no);
 }
@@ -27,6 +34,27 @@ void Server::connect() {
   sock.attach_to_multicast(parameters.mcast_addr);
   sock.attach_to_port(parameters.cmd_port);
 };
+
+void Server::list_files() {
+  namespace fs = std::filesystem;
+
+  fs::path path {parameters.shrd_fldr};
+
+  for (auto& entry: fs::directory_iterator(path)) {
+    if (fs::is_regular_file(entry)) {
+      files_list.push_back(entry.path().filename().string());
+    }
+  }
+
+//  std::ostringstream files;
+//  std::copy(files_list.begin(), files_list.end(), std::ostream_iterator<std::string>(files, "\n"));
+//  std::cout << files.str();
+}
+
+void Server::hello(uint64_t cmd_seq, sockaddr_in addr) {
+  if (send(sock.sock_no, addr, Cmplx_cmd(cmd_message[1], cmd_seq, parameters.max_space, parameters.mcast_addr)) < 0)
+    syserr("send in server");
+}
 
 int main(int argc, char *argv[]) {
   struct server_param parameters;
@@ -41,6 +69,7 @@ int main(int argc, char *argv[]) {
 
   Server server (parameters);
   server.listen();
+  server.~Server();
 
   exit(EXIT_SUCCESS);
 }
