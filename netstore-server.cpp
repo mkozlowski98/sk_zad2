@@ -27,8 +27,12 @@ void Server::listen() {
     std::cout << cmplx_cmd.cmd << " " << be64toh(cmplx_cmd.cmd_seq) << "\n";
     if (strcmp(cmplx_cmd.cmd, cmd_message[0]) == 0)
       hello(be64toh(cmplx_cmd.cmd_seq), addr);
-    if (strcmp(cmplx_cmd.cmd, cmd_message[2]) == 0)
-      files(be64toh(cmplx_cmd.cmd_seq), addr);
+    if (strcmp(cmplx_cmd.cmd, cmd_message[2]) == 0) {
+      if (strcmp(cmplx_cmd.data, empty_str) == 0)
+        files(be64toh(cmplx_cmd.cmd_seq), addr);
+      else
+        filtered_files(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
+    }
   }
 
 }
@@ -48,10 +52,6 @@ void Server::list_files() {
       files_list.push_back(entry.path().filename().string());
     }
   }
-
-//  std::ostringstream files;
-//  std::copy(files_list.begin(), files_list.end(), std::ostream_iterator<std::string>(files, "\n"));
-//  std::cout << files.str();
 }
 
 void Server::hello(uint64_t cmd_seq, sockaddr_in addr) {
@@ -68,7 +68,19 @@ void Server::files(uint64_t cmd_seq, sockaddr_in addr) {
   }
 }
 
+void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
+  if (!files_list.empty()) {
+    std::vector<std::string> filtered;
+    for (auto it = files_list.begin(); it != files_list.end(); ++it)
+      if (strstr((*it).c_str(), data) != nullptr)
+        filtered.push_back((*it));
+    std::ostringstream files;
+    std::copy(filtered.begin(), filtered.end(), std::ostream_iterator<std::string>(files, "\n"));
+    if (send(sock.sock_no, addr, Simpl_cmd(cmd_message[3], cmd_seq, files.str().c_str())) < 0)
+      syserr("send in server");
+  }
 
+}
 int main(int argc, char *argv[]) {
   struct server_param parameters;
   parameters.timeout = TIMEOUT;

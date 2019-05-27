@@ -22,12 +22,12 @@ void Client::send_hello() {
   }
 }
 
-void Client::send_list() {
+void Client::send_list(const char *const data) {
   sockaddr_in rec_addr {};
   Simpl_cmd simpl_cmd {};
   memset(&rec_addr, 0, sizeof rec_addr);
 
-  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(cmd_message[2], cmd_seq, empty_str)) < 0)
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(cmd_message[2], cmd_seq, data)) < 0)
     syserr("send");
   if (receive(sock.sock_no, rec_addr, simpl_cmd) > 0) {
     std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " with message: " << simpl_cmd.cmd \
@@ -48,5 +48,6 @@ int main(int argc, char *argv[]) {
   Client client(parameters, 2);
   client.connect();
   client.send_hello();
-  client.send_list();
+  const char *const str = {"err"};
+  client.send_list(str);
 }

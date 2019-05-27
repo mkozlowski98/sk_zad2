@@ -14,7 +14,7 @@ class Client {
 
   void connect();
   void send_hello();
-  void send_list();
+  void send_list(const char *const);
 };
 
 #endif //ZAD2_NETSTORE_CLIENT_H
