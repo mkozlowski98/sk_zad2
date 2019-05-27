@@ -41,7 +41,14 @@ void Sock::enable_broadcasting() {
   //TODO set timeval for sending and receive
 }
 
-Simpl_cmd::Simpl_cmd(char *cmd, uint64_t cmd_seq, char *data) {
+void Sock::set_address(char *addr, in_port_t port) {
+  local_addr.sin_family = AF_INET;
+  local_addr.sin_port = htons(port);
+  if (inet_aton(addr, &local_addr.sin_addr) == 0)
+    syserr("inet_aton");
+}
+
+Simpl_cmd::Simpl_cmd(const char *const cmd, uint64_t cmd_seq, const char *const data) {
   strncpy(this->cmd, cmd, 10);
   this->cmd_seq = htobe64(cmd_seq);
   strncpy(this->data, data, DATA_SIZE);

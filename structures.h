@@ -14,6 +14,9 @@
 #define TIMEOUT 5
 #define MAX_SPACE 52428800
 
+const char *const empty_str = {""};
+const char *const cmd_message[2] = {"HELLO", "GOOD_DAY"};
+
 class Sock {
  public:
   int sock_no;
@@ -25,6 +28,7 @@ class Sock {
   void attach_to_multicast(char *mcast_addr);
   void attach_to_port(in_port_t port);
   void enable_broadcasting();
+  void set_address(char* addr, in_port_t port);
 };
 
 class __attribute__((__packed__)) Simpl_cmd {
@@ -34,7 +38,7 @@ class __attribute__((__packed__)) Simpl_cmd {
   char data[DATA_SIZE];
 
   Simpl_cmd() = default;
-  Simpl_cmd(char *, uint64_t, char *);
+  Simpl_cmd(const char *const, uint64_t, const char *const);
 };
 
 struct server_param {

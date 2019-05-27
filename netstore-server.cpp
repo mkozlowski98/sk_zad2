@@ -1,9 +1,7 @@
 #include "netstore-server.h"
 #include "err.h"
 
-Server::Server(struct server_param parameters) {
-  this->parameters = parameters;
-}
+Server::Server(struct server_param _parameters): parameters(_parameters), sock() {}
 
 void Server::listen() {
   connect();
@@ -17,7 +15,7 @@ void Server::listen() {
 
   receive<Simpl_cmd>(sock.sock_no, addr, simpl_cmd);
 
-  std::cout << simpl_cmd.cmd << "\n";
+  std::cout << simpl_cmd.cmd << " " << be64toh(simpl_cmd.cmd_seq) << "\n";
 
   close(sock.sock_no);
 }
