@@ -6,6 +6,7 @@ Server::Server(struct server_param _parameters): parameters(_parameters), sock()
 Server::~Server() {
   files_list.clear();
   files_list.shrink_to_fit();
+  close(sock.sock_no);
 }
 
 void Server::listen() {
@@ -18,16 +19,16 @@ void Server::listen() {
   Cmplx_cmd cmplx_cmd{};
 
   struct sockaddr_in addr {};
-  std::memset(&addr, 0, sizeof addr);
 
-  receive(sock.sock_no, addr, cmplx_cmd);
+  for (;;) {
+    memset(&addr, 0, sizeof addr);
+    memset(&cmplx_cmd, 0, sizeof(cmplx_cmd));
+    receive(sock.sock_no, addr, cmplx_cmd);
+    std::cout << cmplx_cmd.cmd << " " << be64toh(cmplx_cmd.cmd_seq) << "\n";
+    if (strcmp(cmplx_cmd.cmd, cmd_message[0]) == 0)
+      hello(be64toh(cmplx_cmd.cmd_seq), addr);
+  }
 
-  std::cout << cmplx_cmd.cmd << " " << be64toh(cmplx_cmd.cmd_seq) << "\n";
-
-  if (strcmp(cmplx_cmd.cmd, cmd_message[0]) == 0)
-    hello(be64toh(cmplx_cmd.cmd_seq), addr);
-
-  close(sock.sock_no);
 }
 
 void Server::connect() {
@@ -56,6 +57,7 @@ void Server::hello(uint64_t cmd_seq, sockaddr_in addr) {
     syserr("send in server");
 }
 
+
 int main(int argc, char *argv[]) {
   struct server_param parameters;
   parameters.timeout = TIMEOUT;
@@ -68,8 +70,14 @@ int main(int argc, char *argv[]) {
   }
 
   Server server (parameters);
+  struct sigaction sig_handler;
+  sig_handler.sa_handler = signal_handler;
+  sigemptyset(&sig_handler.sa_mask);
+  sig_handler.sa_flags = 0;
+
+  sigaction(SIGINT, &sig_handler, NULL);
+
   server.listen();
-  server.~Server();
 
   exit(EXIT_SUCCESS);
 }

@@ -22,6 +22,11 @@ void Client::send_hello() {
   }
 }
 
+void Client::send_list() {
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(cmd_message[2], cmd_seq, empty_str)) < 0)
+    syserr("send");
+}
+
 int main(int argc, char *argv[]) {
   struct client_param parameters;
   parameters.timeout = TIMEOUT;
@@ -35,4 +40,5 @@ int main(int argc, char *argv[]) {
   Client client(parameters, 2);
   client.connect();
   client.send_hello();
+  client.send_list();
 }

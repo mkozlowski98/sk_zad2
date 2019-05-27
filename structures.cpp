@@ -135,3 +135,8 @@ bool client_parse(int argc, char *argv[], struct client_param *parameters) {
     return false;
   return true;
 }
+
+void signal_handler(int s) {
+  std::cout << "Caught signal " << s << std::endl;
+  exit(EXIT_SUCCESS);
+}

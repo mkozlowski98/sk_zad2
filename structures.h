@@ -6,6 +6,7 @@
 #include <getopt.h>
 #include <iostream>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -16,7 +17,7 @@
 #define MAX_SPACE 52428800
 
 const char *const empty_str = {""};
-const char *const cmd_message[2] = {"HELLO", "GOOD_DAY"};
+const char *const cmd_message[3] = {"HELLO", "GOOD_DAY", "LIST"};
 
 class Sock {
  public:
@@ -84,4 +85,6 @@ ssize_t send(int sock, struct sockaddr_in addr, T cmd) {
   rcva_len = (socklen_t) sizeof(addr);
   return sendto(sock, (char *)&cmd, sizeof cmd, 0, (struct sockaddr *)&addr, rcva_len);
 }
+
+void signal_handler(int);
 #endif //ZAD2_STRUCTURES_H
