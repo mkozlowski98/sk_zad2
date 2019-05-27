@@ -13,9 +13,12 @@ void Server::listen() {
   struct sockaddr_in addr {};
   std::memset(&addr, 0, sizeof addr);
 
-  receive<Simpl_cmd>(sock.sock_no, addr, simpl_cmd);
+  receive(sock.sock_no, addr, simpl_cmd);
 
   std::cout << simpl_cmd.cmd << " " << be64toh(simpl_cmd.cmd_seq) << "\n";
+
+  if (send(sock.sock_no, addr, Cmplx_cmd(cmd_message[1], be64toh(simpl_cmd.cmd_seq), parameters.max_space, parameters.mcast_addr)) < 0)
+    syserr("send in server");
 
   close(sock.sock_no);
 }

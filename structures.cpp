@@ -54,6 +54,13 @@ Simpl_cmd::Simpl_cmd(const char *const cmd, uint64_t cmd_seq, const char *const 
   strncpy(this->data, data, DATA_SIZE);
 }
 
+Cmplx_cmd::Cmplx_cmd(const char *const cmd, uint64_t cmd_seq, uint64_t param, const char *const data) {
+  strncpy(this->cmd, cmd, 10);
+  this->cmd_seq = htobe64(cmd_seq);
+  this->param = htobe64(param);
+  strncpy(this->data, data, DATA_SIZE);
+}
+
 bool server_parse(int argc, char **argv, struct server_param *parameters) {
   int opt, g = 0, p = 0, f = 0;
   int timeout;

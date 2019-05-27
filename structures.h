@@ -41,6 +41,17 @@ class __attribute__((__packed__)) Simpl_cmd {
   Simpl_cmd(const char *const, uint64_t, const char *const);
 };
 
+class __attribute__((__packed__)) Cmplx_cmd {
+ public:
+  char cmd[10];
+  uint64_t cmd_seq;
+  uint64_t param;
+  char data[DATA_SIZE];
+
+  Cmplx_cmd() = default;
+  Cmplx_cmd(const char *const, uint64_t, uint64_t, const char *const);
+};
+
 struct server_param {
   char *mcast_addr;
   in_port_t cmd_port;

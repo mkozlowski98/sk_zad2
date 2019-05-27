@@ -9,10 +9,17 @@ void Client::connect() {
 }
 
 void Client::send_hello() {
-  Simpl_cmd simpl_cmd(cmd_message[0], cmd_seq, empty_str);
+  sockaddr_in rec_addr {};
+  Cmplx_cmd cmplx_cmd {};
+  memset(&rec_addr, 0, sizeof rec_addr);
 
-  if (send(sock.sock_no, sock.local_addr, simpl_cmd) < 0)
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(cmd_message[0], cmd_seq, empty_str)) < 0)
     syserr("send");
+
+  if (receive(sock.sock_no, rec_addr, cmplx_cmd) > 0) {
+    std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " with message: " << cmplx_cmd.cmd \
+      << " with max_space: " << be64toh(cmplx_cmd.param) << ", mcast_addr: " << cmplx_cmd.data << "\n";
+  }
 }
 
 int main(int argc, char *argv[]) {
