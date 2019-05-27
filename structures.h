@@ -17,7 +17,7 @@
 #define MAX_SPACE 52428800
 
 const char *const empty_str = {""};
-const char *const cmd_message[3] = {"HELLO", "GOOD_DAY", "LIST"};
+const char *const cmd_message[4] = {"HELLO", "GOOD_DAY", "LIST", "MY_LIST"};
 
 class Sock {
  public:

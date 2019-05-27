@@ -19,6 +19,7 @@ class Server {
   void connect();
   void list_files();
   void hello(uint64_t, sockaddr_in);
+  void files(uint64_t, sockaddr_in);
 };
 
 #endif //ZAD2_NETSTORE_SERVER_H
