@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/maciek/studies/4_sem/sik/zad2/netstore-client.c" "/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-client.c.o"
-  "/home/maciek/studies/4_sem/sik/zad2/netstore-server.c" "/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-server.c.o"
+  "/home/koksu/studies/4_sem/sik/zad2/netstore-client.c" "/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-client.c.o"
+  "/home/koksu/studies/4_sem/sik/zad2/netstore-server.c" "/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-server.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
