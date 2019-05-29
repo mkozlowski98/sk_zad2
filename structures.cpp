@@ -48,6 +48,11 @@ void Sock::set_address(char *addr, in_port_t port) {
     syserr("inet_aton");
 }
 
+void Sock::set_timeout(timeval &timeout) {
+  if (setsockopt(sock_no, SOL_SOCKET, SO_RCVTIMEO, (void *)&timeout, sizeof(timeout)) < 0)
+    syserr("setsockopt failed");
+}
+
 Simpl_cmd::Simpl_cmd(const char *const cmd, uint64_t cmd_seq, const char *const data) {
   memset(this->cmd, 0, 10);
   strcpy(this->cmd, cmd);
@@ -88,7 +93,7 @@ bool server_parse(int argc, char **argv, struct server_param *parameters) {
         timeout = atoi(optarg);
         if (timeout < 0 || timeout > 300)
           return false;
-        parameters->timeout = (unsigned int) timeout;
+        parameters->timeout = (unsigned int) timeout * 1000;
         break;
       case '?':
         std::cout << "unknown parameter\n";
@@ -123,7 +128,7 @@ bool client_parse(int argc, char *argv[], struct client_param *parameters) {
         timeout = atoi(optarg);
         if (timeout <= 0 || timeout > 300)
           return false;
-        parameters->timeout = (unsigned int) timeout;
+        parameters->timeout = (unsigned int) timeout * 1000;
         break;
       case '?':
         printf("unknown parameter\n");

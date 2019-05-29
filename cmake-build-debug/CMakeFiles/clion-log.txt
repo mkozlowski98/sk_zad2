@@ -1,11 +1,17 @@
-/opt/clion-2018.2.6/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=/usr/bin/x86_64-linux-gnu-g++-8 -G "CodeBlocks - Unix Makefiles" /home/maciek/studies/4_sem/sik/zad2
+/snap/clion/70/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8 -G "CodeBlocks - Unix Makefiles" /home/koksu/studies/4_sem/sik/zad2
 -- The CXX compiler identification is GNU 8.3.0
--- Check for working CXX compiler: /usr/bin/x86_64-linux-gnu-g++-8
--- Check for working CXX compiler: /usr/bin/x86_64-linux-gnu-g++-8 -- works
+-- Check for working CXX compiler: /usr/bin/g++-8
+-- Check for working CXX compiler: /usr/bin/g++-8 -- works
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/maciek/studies/4_sem/sik/zad2/cmake-build-debug
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    CMAKE_C_COMPILER
+
+
+-- Build files have been written to: /home/koksu/studies/4_sem/sik/zad2/cmake-build-debug

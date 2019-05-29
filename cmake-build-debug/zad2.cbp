@@ -8,38 +8,28 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug"/>
+				<Option working_dir="/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug"/>
+				<Option working_dir="/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="edit_cache">
-				<Option working_dir="/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="zad2">
-				<Option output="/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/zad2" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug"/>
+				<Option output="/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/zad2" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -54,15 +44,15 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 zad2"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 zad2"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="zad2/fast">
-				<Option output="/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/zad2" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug"/>
+				<Option output="/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/zad2" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -77,32 +67,42 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 zad2/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/maciek/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 zad2/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/maciek/studies/4_sem/sik/zad2/netstore-client.cpp">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-client.cpp">
 			<Option target="zad2"/>
 		</Unit>
-		<Unit filename="/home/maciek/studies/4_sem/sik/zad2/netstore-client.h">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-client.h">
 			<Option target="zad2"/>
 		</Unit>
-		<Unit filename="/home/maciek/studies/4_sem/sik/zad2/netstore-server.cpp">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-server.cpp">
 			<Option target="zad2"/>
 		</Unit>
-		<Unit filename="/home/maciek/studies/4_sem/sik/zad2/netstore-server.h">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-server.h">
 			<Option target="zad2"/>
 		</Unit>
-		<Unit filename="/home/maciek/studies/4_sem/sik/zad2/structures.cpp">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/structures.cpp">
 			<Option target="zad2"/>
 		</Unit>
-		<Unit filename="/home/maciek/studies/4_sem/sik/zad2/structures.h">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/structures.h">
 			<Option target="zad2"/>
 		</Unit>
-		<Unit filename="/home/maciek/studies/4_sem/sik/zad2/CMakeLists.txt">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

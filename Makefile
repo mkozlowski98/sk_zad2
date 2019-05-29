@@ -17,4 +17,4 @@ netstore-client: netstore-client.o err.o structures.o
 .PHONY: clean
 
 clean:
-	rm -r $(TARGETS) *.o
+	rm -r $(TARGETS) *.o *~

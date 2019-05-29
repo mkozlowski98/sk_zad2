@@ -7,6 +7,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -31,6 +32,7 @@ class Sock {
   void attach_to_port(in_port_t port);
   void enable_broadcasting();
   void set_address(char* addr, in_port_t port);
+  void set_timeout(timeval& timeval);
 };
 
 class __attribute__((__packed__)) Simpl_cmd {

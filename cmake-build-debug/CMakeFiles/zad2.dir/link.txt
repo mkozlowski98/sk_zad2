@@ -1,1 +1,1 @@
-/usr/bin/x86_64-linux-gnu-g++-8  -Wall -Wextra -O2 -g   CMakeFiles/zad2.dir/netstore-server.cpp.o CMakeFiles/zad2.dir/structures.cpp.o CMakeFiles/zad2.dir/netstore-client.cpp.o  -o zad2 
+/usr/bin/g++-8  -Wall -Wextra -O2 -g   CMakeFiles/zad2.dir/netstore-server.cpp.o CMakeFiles/zad2.dir/structures.cpp.o CMakeFiles/zad2.dir/netstore-client.cpp.o  -o zad2 
