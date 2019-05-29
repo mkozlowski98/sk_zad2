@@ -123,6 +123,60 @@ zad2/fast:
 	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/build
 .PHONY : zad2/fast
 
+globals.o: globals.cpp.o
+
+.PHONY : globals.o
+
+# target to build an object file
+globals.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/globals.cpp.o
+.PHONY : globals.cpp.o
+
+globals.i: globals.cpp.i
+
+.PHONY : globals.i
+
+# target to preprocess a source file
+globals.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/globals.cpp.i
+.PHONY : globals.cpp.i
+
+globals.s: globals.cpp.s
+
+.PHONY : globals.s
+
+# target to generate assembly for a file
+globals.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/globals.cpp.s
+.PHONY : globals.cpp.s
+
+messages.o: messages.cpp.o
+
+.PHONY : messages.o
+
+# target to build an object file
+messages.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/messages.cpp.o
+.PHONY : messages.cpp.o
+
+messages.i: messages.cpp.i
+
+.PHONY : messages.i
+
+# target to preprocess a source file
+messages.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/messages.cpp.i
+.PHONY : messages.cpp.i
+
+messages.s: messages.cpp.s
+
+.PHONY : messages.s
+
+# target to generate assembly for a file
+messages.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/messages.cpp.s
+.PHONY : messages.cpp.s
+
 netstore-client.o: netstore-client.cpp.o
 
 .PHONY : netstore-client.o
@@ -213,6 +267,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... zad2"
 	@echo "... edit_cache"
+	@echo "... globals.o"
+	@echo "... globals.i"
+	@echo "... globals.s"
+	@echo "... messages.o"
+	@echo "... messages.i"
+	@echo "... messages.s"
 	@echo "... netstore-client.o"
 	@echo "... netstore-client.i"
 	@echo "... netstore-client.s"

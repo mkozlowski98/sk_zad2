@@ -84,6 +84,18 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/globals.cpp">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/globals.h">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/messages.cpp">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/messages.h">
+			<Option target="zad2"/>
+		</Unit>
 		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-client.cpp">
 			<Option target="zad2"/>
 		</Unit>

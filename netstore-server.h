@@ -1,9 +1,12 @@
 #ifndef ZAD2_NETSTORE_SERVER_H
 #define ZAD2_NETSTORE_SERVER_H
 
+#include <unistd.h>
 #include <filesystem>
 #include <iterator>
-#include "structures.h"
+#include "sock.h"
+#include "globals.h"
+#include "messages.h"
 
 class Server {
  private:

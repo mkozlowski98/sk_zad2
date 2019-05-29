@@ -1,7 +1,10 @@
 #ifndef ZAD2_NETSTORE_CLIENT_H
 #define ZAD2_NETSTORE_CLIENT_H
 
-#include "structures.h"
+#include <chrono>
+#include "sock.h"
+#include "globals.h"
+#include "messages.h"
 
 class Client {
  private:

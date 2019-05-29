@@ -9,10 +9,10 @@ LFLAGS = -lstdc++fs
 
 all: $(TARGETS)
 
-netstore-server: netstore-server.o err.o structures.o
+netstore-server: netstore-server.o err.o sock.o messages.o globals.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LFLAGS)
 
-netstore-client: netstore-client.o err.o structures.o
+netstore-client: netstore-client.o err.o sock.o messages.o globals.o
 
 .PHONY: clean
 
