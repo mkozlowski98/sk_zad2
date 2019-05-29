@@ -12,7 +12,9 @@ void Client::connect() {
 template <typename clock>
 unsigned int Client::get_diff(std::chrono::time_point<clock> time) {
   auto time_now = std::chrono::system_clock::now();
+//  std::cout << "time_now in diff: " << std::chrono::duration_cast<std::chrono::milliseconds>(time_now.time_since_epoch()).count() << std::endl;
   auto milisecs = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time).count();
+//  std::cout << "diff: " << milisecs << std::endl;
   return milisecs;
 }
 
@@ -20,6 +22,7 @@ template <typename clock>
 void Client::set_recvtime(timeval *recv_timeout, std::chrono::time_point<clock> time) {
   auto time_now = std::chrono::system_clock::now();
   auto milisecs = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time).count();
+  milisecs = parameters.timeout - milisecs;
   recv_timeout->tv_sec = milisecs / 1000;
   recv_timeout->tv_usec = (milisecs % 1000) * 1000;
 }
@@ -34,13 +37,17 @@ void Client::send_hello() {
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
-  while (get_diff(time) < parameters.timeout) {
+  unsigned int diff;
+  while ((diff = get_diff(time)) < parameters.timeout) {
+//    std::cout << "time: " << std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()).count() << std::endl;
+//    std::cout << "Waiting: " << diff << std::endl;
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
     if (receive(sock.sock_no, rec_addr, cmplx_cmd) > 0) {
       std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " with message: " << cmplx_cmd.cmd \
       << " with max_space: " << be64toh(cmplx_cmd.param) << ", mcast_addr: " << cmplx_cmd.data << "\n";
     }
+//    sleep(1);
   }
 }
 
@@ -55,7 +62,7 @@ void Client::send_list(const char *const data) {
 
   if (receive(sock.sock_no, rec_addr, simpl_cmd) > 0) {
     std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " with message: " << simpl_cmd.cmd \
-      << " with list of files: " << simpl_cmd.data << "\n";
+      << " with list of files: " << "\n" << simpl_cmd.data;
   }
 }
 

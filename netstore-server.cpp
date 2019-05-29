@@ -24,7 +24,7 @@ void Server::listen() {
     memset(&addr, 0, sizeof addr);
     memset(&cmplx_cmd, 0, sizeof(cmplx_cmd));
     receive(sock.sock_no, addr, cmplx_cmd);
-    std::cout << cmplx_cmd.cmd << " " << be64toh(cmplx_cmd.cmd_seq) << "\n";
+    std::cout << cmplx_cmd.cmd << " " << be64toh(cmplx_cmd.cmd_seq) << " addr: " << inet_ntoa(addr.sin_addr) << "\n";
     if (strcmp(cmplx_cmd.cmd, cmd_message[0]) == 0)
       hello(be64toh(cmplx_cmd.cmd_seq), addr);
     if (strcmp(cmplx_cmd.cmd, cmd_message[2]) == 0) {

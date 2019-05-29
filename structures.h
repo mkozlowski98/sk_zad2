@@ -14,7 +14,7 @@
 
 #define MULTICAST_TTL 5
 #define DATA_SIZE 1000
-#define TIMEOUT 5
+#define TIMEOUT 5000
 #define MAX_SPACE 52428800
 
 const char *const empty_str = {""};
