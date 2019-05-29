@@ -12,7 +12,7 @@ class __attribute__((__packed__)) Simpl_cmd {
   char data[DATA_SIZE];
 
   Simpl_cmd() = default;
-  Simpl_cmd(const char *const, uint64_t, const char *const);
+  Simpl_cmd(std::string, uint64_t, std::string);
 };
 
 class __attribute__((__packed__)) Cmplx_cmd {
@@ -23,7 +23,7 @@ class __attribute__((__packed__)) Cmplx_cmd {
   uint64_t param;
 
   Cmplx_cmd() = default;
-  Cmplx_cmd(const char *const, uint64_t, uint64_t, const char *const);
+  Cmplx_cmd(std::string, uint64_t, uint64_t, std::string);
 };
 
 #endif //ZAD2_MESSAGES_H

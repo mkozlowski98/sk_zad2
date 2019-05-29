@@ -30,7 +30,7 @@ void Client::send_hello() {
   memset(&rec_addr, 0, sizeof rec_addr);
   timeval recv_timeout {};
 
-  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(cmd_message[0], cmd_seq, empty_str)) < 0)
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["HELLO"], cmd_seq, global::empty_str)) < 0)
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
@@ -44,13 +44,13 @@ void Client::send_hello() {
   }
 }
 
-void Client::send_list(const char *const data) {
+void Client::send_list(std::string data) {
   sockaddr_in rec_addr {};
   Simpl_cmd simpl_cmd {};
   memset(&rec_addr, 0, sizeof rec_addr);
   timeval recv_timeout {};
 
-  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(cmd_message[2], cmd_seq, data)) < 0)
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["LIST"], cmd_seq, data)) < 0)
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
@@ -77,6 +77,6 @@ int main(int argc, char *argv[]) {
   Client client(parameters, 2);
   client.connect();
   client.send_hello();
-  const char *const str = {"err"};
+  std::string str = {"netstore"};
   client.send_list(str);
 }

@@ -7,6 +7,7 @@
 #include "sock.h"
 #include "globals.h"
 #include "messages.h"
+#include "err.h"
 
 class Server {
  private:
@@ -22,7 +23,6 @@ class Server {
   void connect();
   void list_files();
   void hello(uint64_t, sockaddr_in);
-  void files(uint64_t, sockaddr_in);
   void filtered_files(uint64_t, sockaddr_in, const char *);
 };
 

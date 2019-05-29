@@ -1,5 +1,4 @@
 #include "netstore-server.h"
-#include "err.h"
 
 Server::Server(struct server_param _parameters): parameters(_parameters), sock() {}
 
@@ -11,12 +10,10 @@ Server::~Server() {
 
 void Server::listen() {
   list_files();
-
   connect();
-
   std::cout << "Listening\n";
-
   Cmplx_cmd cmplx_cmd{};
+  std::string message;
 
   struct sockaddr_in addr {};
 
@@ -24,15 +21,12 @@ void Server::listen() {
     memset(&addr, 0, sizeof addr);
     memset(&cmplx_cmd, 0, sizeof(cmplx_cmd));
     receive(sock.sock_no, addr, cmplx_cmd);
+    message = cmplx_cmd.cmd;
     std::cout << cmplx_cmd.cmd << " " << be64toh(cmplx_cmd.cmd_seq) << " addr: " << inet_ntoa(addr.sin_addr) << "\n";
-    if (strcmp(cmplx_cmd.cmd, cmd_message[0]) == 0)
+    if (message == global::cmd_message["HELLO"])
       hello(be64toh(cmplx_cmd.cmd_seq), addr);
-    if (strcmp(cmplx_cmd.cmd, cmd_message[2]) == 0) {
-      if (strcmp(cmplx_cmd.data, empty_str) == 0)
-        files(be64toh(cmplx_cmd.cmd_seq), addr);
-      else
-        filtered_files(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
-    }
+    if (message == global::cmd_message["LIST"])
+      filtered_files(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
   }
 
 }
@@ -40,7 +34,7 @@ void Server::listen() {
 void Server::connect() {
   sock.attach_to_multicast(parameters.mcast_addr);
   sock.attach_to_port(parameters.cmd_port);
-};
+}
 
 void Server::list_files() {
   namespace fs = std::filesystem;
@@ -55,17 +49,8 @@ void Server::list_files() {
 }
 
 void Server::hello(uint64_t cmd_seq, sockaddr_in addr) {
-  if (send(sock.sock_no, addr, Cmplx_cmd(cmd_message[1], cmd_seq, parameters.max_space, parameters.mcast_addr)) < 0)
+  if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["GOOD_DAY"], cmd_seq, parameters.max_space, parameters.mcast_addr)) < 0)
     syserr("send in server");
-}
-
-void Server::files(uint64_t cmd_seq, sockaddr_in addr) {
-  if (!files_list.empty()) {
-    std::ostringstream files;
-    std::copy(files_list.begin(), files_list.end(), std::ostream_iterator<std::string>(files, "\n"));
-    if (send(sock.sock_no, addr, Simpl_cmd(cmd_message[3], cmd_seq, files.str().c_str())) < 0)
-      syserr("send in server");
-  }
 }
 
 void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
@@ -76,13 +61,14 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data
         filtered.push_back((*it));
     std::ostringstream files;
     std::copy(filtered.begin(), filtered.end(), std::ostream_iterator<std::string>(files, "\n"));
-    if (send(sock.sock_no, addr, Simpl_cmd(cmd_message[3], cmd_seq, files.str().c_str())) < 0)
+    std::cout << files.str();
+    if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, files.str())) < 0)
       syserr("send in server");
   }
 
 }
 int main(int argc, char *argv[]) {
-  struct server_param parameters;
+  struct server_param parameters {};
   parameters.timeout = TIMEOUT;
   parameters.max_space = MAX_SPACE;
 
@@ -93,12 +79,12 @@ int main(int argc, char *argv[]) {
   }
 
   Server server (parameters);
-  struct sigaction sig_handler;
+  struct sigaction sig_handler {};
   sig_handler.sa_handler = signal_handler;
   sigemptyset(&sig_handler.sa_mask);
   sig_handler.sa_flags = 0;
 
-  sigaction(SIGINT, &sig_handler, NULL);
+  sigaction(SIGINT, &sig_handler, nullptr);
 
   server.listen();
 

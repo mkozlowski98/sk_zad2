@@ -4,14 +4,19 @@
 #include <signal.h>
 #include <getopt.h>
 #include <iostream>
+#include <map>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
 #define TIMEOUT 5000
 #define MAX_SPACE 52428800
 
-const char *const empty_str = {""};
-const char *const cmd_message[4] = {"HELLO", "GOOD_DAY", "LIST", "MY_LIST"};
+namespace global {
+  static std::string empty_str {};
+  static std::map<std::string, std::string> cmd_message = {
+      {"HELLO", "HELLO"}, {"GOOD_DAY", "GOOD_DAY"},
+      {"LIST", "LIST"}, {"MY_LIST", "MY_LIST"}};
+}
 
 struct server_param {
   char *mcast_addr;

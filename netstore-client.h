@@ -21,7 +21,7 @@ class Client {
   template <typename clock>
   void set_recvtime(timeval*, std::chrono::time_point<clock>);
   void send_hello();
-  void send_list(const char *const);
+  void send_list(std::string);
 };
 
 #endif //ZAD2_NETSTORE_CLIENT_H
