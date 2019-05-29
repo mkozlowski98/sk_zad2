@@ -57,10 +57,10 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data
   if (!files_list.empty()) {
     std::string reg(data);
     std::string str_to_send{};
-    for (auto it: files_list) {
+    for (auto &it: files_list) {
       if (it.find(reg) != std::string::npos) {
         if (str_to_send.length() + it.length() > UDP_SIZE) {
-          if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send)) < 0)
+          if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, &str_to_send)) < 0)
             syserr("send in server");
           str_to_send.clear();
         }
@@ -68,7 +68,7 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data
       }
     }
     if (!str_to_send.empty())
-      if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send)) < 0)
+      if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, &str_to_send)) < 0)
         syserr("send in server");
   }
 

@@ -68,8 +68,6 @@ bool client_parse(int argc, char *argv[], struct client_param *parameters) {
     }
   }
 
-  std::cout << parameters->timeout << std::endl;
-
   if (g * p * o == 0)
     return false;
   return true;

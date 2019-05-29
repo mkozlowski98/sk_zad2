@@ -12,7 +12,7 @@ class __attribute__((__packed__)) Simpl_cmd {
   char data[DATA_SIZE];
 
   Simpl_cmd() = default;
-  Simpl_cmd(std::string, uint64_t, std::string);
+  Simpl_cmd(std::string, uint64_t, std::string *);
 };
 
 class __attribute__((__packed__)) Cmplx_cmd {

@@ -30,7 +30,7 @@ void Client::send_hello() {
   memset(&rec_addr, 0, sizeof rec_addr);
   timeval recv_timeout {};
 
-  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["HELLO"], cmd_seq, global::empty_str)) < 0)
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["HELLO"], cmd_seq, &global::empty_str)) < 0)
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
@@ -38,36 +38,62 @@ void Client::send_hello() {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
     if (receive(sock.sock_no, rec_addr, cmplx_cmd) > 0) {
-      std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " with message: " << cmplx_cmd.cmd \
-      << " with max_space: " << be64toh(cmplx_cmd.param) << ", mcast_addr: " << cmplx_cmd.data << "\n";
+      std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " (" << cmplx_cmd.data << ") with free space "\
+      << be64toh(cmplx_cmd.param) << std::endl;
     }
   }
 }
 
 void Client::send_list(std::string data) {
+  files.clear();
   sockaddr_in rec_addr {};
   Simpl_cmd simpl_cmd {};
   memset(&rec_addr, 0, sizeof rec_addr);
   timeval recv_timeout {};
-  int len;
 
-  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["LIST"], cmd_seq, data)) < 0)
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["LIST"], cmd_seq, &data)) < 0)
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
   while (get_diff(time) < parameters.timeout) {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
-    if ((len = receive(sock.sock_no, rec_addr, simpl_cmd)) > 0) {
-      std::cout << "Read " << len << " bytes from " << inet_ntoa(rec_addr.sin_addr) << " with message: " << simpl_cmd.cmd \
-      << " with list of files: " << "\n" << simpl_cmd.data;
-    }
+    if (receive(sock.sock_no, rec_addr, simpl_cmd) > 0)
+      found_files(inet_ntoa(rec_addr.sin_addr), simpl_cmd.data);
   }
+  print_files();
+}
+
+std::vector<std::string> Client::get_command() {
+  std::vector<std::string> line;
+  std::string command;
+  getline(std::cin, command);
+  std::transform(command.begin(), command.end(), command.begin(), ::tolower);
+  std::stringstream stream(command);
+  while (getline(stream, command, ' ')) {
+    line.push_back(command);
+  }
+  return line;
+}
+
+void Client::found_files(char * addr, char * data) {
+  std::stringstream stream(data);
+  std::string addr_str(addr);
+  std::string file;
+  while (getline(stream, file, '\n'))
+    files.emplace_back(std::make_pair(file, addr_str));
+}
+
+void Client::print_files() {
+  for (auto &pair: files)
+    std::cout << pair.first << " (" << pair.second << ")" << std::endl;
 }
 
 int main(int argc, char *argv[]) {
-  struct client_param parameters;
+  struct client_param parameters {};
   parameters.timeout = TIMEOUT;
+  std::vector<std::string> line;
+  bool exit = false;
 
   /* parsing program's arguments */
   if (!client_parse(argc, argv, &parameters)) {
@@ -77,7 +103,20 @@ int main(int argc, char *argv[]) {
 
   Client client(parameters, 2);
   client.connect();
-  client.send_hello();
-  std::string str {};
-  client.send_list(str);
+
+  while (!exit) {
+    line = client.get_command();
+    if (line.size() == 2) {
+      if (line[0] == "search")
+        client.send_list(line[1]);
+    } else if (line.size() == 1) {
+      if (line[0] == "discover")
+        client.send_hello();
+      if (line[0] == "search")
+        client.send_list(global::empty_str);
+      if (line[0] == "exit") //TODO close all sockets
+        exit = true;
+    }
+  }
+
 }
