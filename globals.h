@@ -16,7 +16,8 @@ namespace global {
   static std::string empty_str {};
   static std::map<std::string, std::string> cmd_message = {
       {"HELLO", "HELLO"}, {"GOOD_DAY", "GOOD_DAY"},
-      {"LIST", "LIST"}, {"MY_LIST", "MY_LIST"}};
+      {"LIST", "LIST"}, {"MY_LIST", "MY_LIST"},
+      {"GET", "GET"}};
 }
 
 struct server_param {

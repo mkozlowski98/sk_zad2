@@ -24,7 +24,7 @@ void Client::set_recvtime(timeval *recv_timeout, std::chrono::time_point<clock> 
   recv_timeout->tv_usec = (milisecs % 1000) * 1000;
 }
 
-void Client::send_hello() {
+void Client::send_discover() {
   sockaddr_in rec_addr {};
   Cmplx_cmd cmplx_cmd {};
   memset(&rec_addr, 0, sizeof rec_addr);
@@ -44,7 +44,7 @@ void Client::send_hello() {
   }
 }
 
-void Client::send_list(std::string data) {
+void Client::send_search(std::string data) {
   files.clear();
   sockaddr_in rec_addr {};
   Simpl_cmd simpl_cmd {};
@@ -89,6 +89,24 @@ void Client::print_files() {
     std::cout << pair.first << " (" << pair.second << ")" << std::endl;
 }
 
+void Client::send_fetch(std::string data) {
+  std::string addr_str;
+  for (auto &pair: files) {
+    if (pair.first == data) {
+      addr_str = pair.second;
+      break;
+    }
+  }
+
+  if (addr_str != global::empty_str) {
+    Sock fetch_sock {};
+    fetch_sock.set_address(addr_str.data(), parameters.cmd_port);
+    if (send(fetch_sock.sock_no, fetch_sock.local_addr, Simpl_cmd(global::cmd_message["GET"], cmd_seq, &data)) < 0)
+      syserr("send");
+  } else
+    std::cout << "file doesn't exist" << std::endl;
+}
+
 int main(int argc, char *argv[]) {
   struct client_param parameters {};
   parameters.timeout = TIMEOUT;
@@ -108,12 +126,14 @@ int main(int argc, char *argv[]) {
     line = client.get_command();
     if (line.size() == 2) {
       if (line[0] == "search")
-        client.send_list(line[1]);
+        client.send_search(line[1]);
+      if (line[0] == "fetch")
+        client.send_fetch(line[1]);
     } else if (line.size() == 1) {
       if (line[0] == "discover")
-        client.send_hello();
+        client.send_discover();
       if (line[0] == "search")
-        client.send_list(global::empty_str);
+        client.send_search(global::empty_str);
       if (line[0] == "exit") //TODO close all sockets
         exit = true;
     }
