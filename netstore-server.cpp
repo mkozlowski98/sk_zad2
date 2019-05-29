@@ -1,6 +1,6 @@
 #include "netstore-server.h"
 
-Server::Server(struct server_param _parameters): parameters(_parameters), sock() {}
+Server::Server(struct server_param _parameters): parameters(_parameters), sock{SOCK_DGRAM} {}
 
 Server::~Server() {
   files_list.clear();
@@ -27,6 +27,8 @@ void Server::listen() {
       hello(be64toh(cmplx_cmd.cmd_seq), addr);
     if (message == global::cmd_message["LIST"])
       filtered_files(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
+    else if (message == global::cmd_message["GET"])
+      send_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
   }
 
 }
@@ -73,6 +75,15 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data
   }
 
 }
+
+void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
+  Sock send_sock(SOCK_STREAM);
+  uint64_t port = send_sock.tcp_socket();
+  std::cout << port << std::endl;
+  if (send(send_sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, std::string(data))) < 0)
+    syserr("send in server");
+}
+
 int main(int argc, char *argv[]) {
   struct server_param parameters {};
   parameters.timeout = TIMEOUT;

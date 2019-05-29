@@ -13,13 +13,14 @@ class Sock {
   int optval;
   struct sockaddr_in local_addr;
 
-  Sock();
+  Sock(int);
 
   void attach_to_multicast(char *mcast_addr);
   void attach_to_port(in_port_t port);
   void enable_broadcasting();
   void set_address(char* addr, in_port_t port);
   void set_timeout(timeval& timeval);
+  uint64_t tcp_socket();
 };
 
 #endif //ZAD2_SOCK_H

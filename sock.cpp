@@ -1,8 +1,8 @@
 #include "sock.h"
 #include "err.h"
 
-Sock::Sock() {
-  sock_no = socket(AF_INET, SOCK_DGRAM, 0);
+Sock::Sock(int type) {
+  sock_no = socket(AF_INET, type, 0);
   if (sock_no < 0)
     syserr("socket");
 }
@@ -37,8 +37,6 @@ void Sock::enable_broadcasting() {
   optval = MULTICAST_TTL;
   if (setsockopt(sock_no, IPPROTO_IP, IP_MULTICAST_TTL, (void*)&optval, sizeof optval) < 0)
     syserr("setsockopt multicast ttl");
-
-  //TODO set timeval for sending and receive
 }
 
 void Sock::set_address(char *addr, in_port_t port) {
@@ -51,4 +49,17 @@ void Sock::set_address(char *addr, in_port_t port) {
 void Sock::set_timeout(timeval &timeout) {
   if (setsockopt(sock_no, SOL_SOCKET, SO_RCVTIMEO, (void *)&timeout, sizeof(timeout)) < 0)
     syserr("setsockopt failed");
+}
+
+uint64_t Sock::tcp_socket() {
+  local_addr.sin_family = AF_INET;
+  local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  local_addr.sin_port = 0;
+  if (bind(sock_no, (struct sockaddr *)&local_addr, sizeof(local_addr)) < 0)
+    syserr("bind");
+  sockaddr_in my_addr {};
+  socklen_t len = sizeof(my_addr);
+  if (getsockname(sock_no, (struct sockaddr *)&my_addr, &len) < 0)
+    syserr("getsockname");
+  return ntohs(local_addr.sin_port);
 }

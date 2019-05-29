@@ -1,7 +1,7 @@
 #include "netstore-client.h"
 #include "err.h"
 
-Client::Client(struct client_param parameters, uint64_t _seq): parameters(parameters), cmd_seq(_seq), sock {} {}
+Client::Client(struct client_param parameters, uint64_t _seq): parameters(parameters), cmd_seq(_seq), sock {SOCK_DGRAM} {}
 
 void Client::connect() {
   sock.enable_broadcasting();
@@ -99,7 +99,7 @@ void Client::send_fetch(std::string data) {
   }
 
   if (addr_str != global::empty_str) {
-    Sock fetch_sock {};
+    Sock fetch_sock {SOCK_DGRAM};
     fetch_sock.set_address(addr_str.data(), parameters.cmd_port);
     if (send(fetch_sock.sock_no, fetch_sock.local_addr, Simpl_cmd(global::cmd_message["GET"], cmd_seq, &data)) < 0)
       syserr("send");

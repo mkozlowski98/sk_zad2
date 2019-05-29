@@ -24,6 +24,7 @@ class Server {
   void list_files();
   void hello(uint64_t, sockaddr_in);
   void filtered_files(uint64_t, sockaddr_in, const char *);
+  void send_file(uint64_t, sockaddr_in, const char *);
 };
 
 #endif //ZAD2_NETSTORE_SERVER_H
