@@ -55,15 +55,21 @@ void Server::hello(uint64_t cmd_seq, sockaddr_in addr) {
 
 void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
   if (!files_list.empty()) {
-    std::vector<std::string> filtered;
-    for (auto it = files_list.begin(); it != files_list.end(); ++it)
-      if (strstr((*it).c_str(), data) != nullptr)
-        filtered.push_back((*it));
-    std::ostringstream files;
-    std::copy(filtered.begin(), filtered.end(), std::ostream_iterator<std::string>(files, "\n"));
-    std::cout << files.str();
-    if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, files.str())) < 0)
-      syserr("send in server");
+    std::string reg(data);
+    std::string str_to_send{};
+    for (auto it: files_list) {
+      if (it.find(reg) != std::string::npos) {
+        if (str_to_send.length() + it.length() > UDP_SIZE) {
+          if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send)) < 0)
+            syserr("send in server");
+          str_to_send.clear();
+        }
+        str_to_send += it + "\n";
+      }
+    }
+    if (!str_to_send.empty())
+      if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send)) < 0)
+        syserr("send in server");
   }
 
 }

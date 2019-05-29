@@ -49,6 +49,7 @@ void Client::send_list(std::string data) {
   Simpl_cmd simpl_cmd {};
   memset(&rec_addr, 0, sizeof rec_addr);
   timeval recv_timeout {};
+  int len;
 
   if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["LIST"], cmd_seq, data)) < 0)
     syserr("send");
@@ -57,8 +58,8 @@ void Client::send_list(std::string data) {
   while (get_diff(time) < parameters.timeout) {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
-    if (receive(sock.sock_no, rec_addr, simpl_cmd) > 0) {
-      std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " with message: " << simpl_cmd.cmd \
+    if ((len = receive(sock.sock_no, rec_addr, simpl_cmd)) > 0) {
+      std::cout << "Read " << len << " bytes from " << inet_ntoa(rec_addr.sin_addr) << " with message: " << simpl_cmd.cmd \
       << " with list of files: " << "\n" << simpl_cmd.data;
     }
   }
@@ -77,6 +78,6 @@ int main(int argc, char *argv[]) {
   Client client(parameters, 2);
   client.connect();
   client.send_hello();
-  std::string str = {"netstore"};
+  std::string str {};
   client.send_list(str);
 }
