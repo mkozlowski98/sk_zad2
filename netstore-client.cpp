@@ -12,9 +12,7 @@ void Client::connect() {
 template <typename clock>
 unsigned int Client::get_diff(std::chrono::time_point<clock> time) {
   auto time_now = std::chrono::system_clock::now();
-//  std::cout << "time_now in diff: " << std::chrono::duration_cast<std::chrono::milliseconds>(time_now.time_since_epoch()).count() << std::endl;
   auto milisecs = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time).count();
-//  std::cout << "diff: " << milisecs << std::endl;
   return milisecs;
 }
 
@@ -37,17 +35,13 @@ void Client::send_hello() {
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
-  unsigned int diff;
-  while ((diff = get_diff(time)) < parameters.timeout) {
-//    std::cout << "time: " << std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()).count() << std::endl;
-//    std::cout << "Waiting: " << diff << std::endl;
+  while (get_diff(time) < parameters.timeout) {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
     if (receive(sock.sock_no, rec_addr, cmplx_cmd) > 0) {
       std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " with message: " << cmplx_cmd.cmd \
       << " with max_space: " << be64toh(cmplx_cmd.param) << ", mcast_addr: " << cmplx_cmd.data << "\n";
     }
-//    sleep(1);
   }
 }
 
@@ -55,14 +49,19 @@ void Client::send_list(const char *const data) {
   sockaddr_in rec_addr {};
   Simpl_cmd simpl_cmd {};
   memset(&rec_addr, 0, sizeof rec_addr);
+  timeval recv_timeout {};
 
   if (send(sock.sock_no, sock.local_addr, Simpl_cmd(cmd_message[2], cmd_seq, data)) < 0)
     syserr("send");
 
-
-  if (receive(sock.sock_no, rec_addr, simpl_cmd) > 0) {
-    std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " with message: " << simpl_cmd.cmd \
+  auto time = std::chrono::system_clock::now();
+  while (get_diff(time) < parameters.timeout) {
+    set_recvtime(&recv_timeout, time);
+    sock.set_timeout(recv_timeout);
+    if (receive(sock.sock_no, rec_addr, simpl_cmd) > 0) {
+      std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " with message: " << simpl_cmd.cmd \
       << " with list of files: " << "\n" << simpl_cmd.data;
+    }
   }
 }
 
