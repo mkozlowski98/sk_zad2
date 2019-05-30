@@ -5,6 +5,7 @@
 #include <getopt.h>
 #include <iostream>
 #include <map>
+#include <algorithm>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
@@ -51,6 +52,4 @@ ssize_t send(int sock, struct sockaddr_in addr, T cmd) {
   rcva_len = (socklen_t) sizeof(addr);
   return sendto(sock, (char *)&cmd, sizeof cmd, 0, (struct sockaddr *)&addr, rcva_len);
 }
-
-void signal_handler(int);
 #endif //ZAD2_GLOBALS_H

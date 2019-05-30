@@ -77,11 +77,22 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data
 }
 
 void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
+  auto it = std::find(files_list.begin(), files_list.end(), std::string(data));
+  if (it == files_list.end()) {
+    std::string message("Trying to download non-existent file");
+    print_error(addr, &message);
+    return;
+  }
   Sock send_sock{SOCK_STREAM};
   uint64_t port = send_sock.tcp_socket();
   std::cout << "Port: " << port << std::endl;
   if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, std::string(data))) < 0)
     syserr("send in server");
+}
+
+void Server::print_error(sockaddr_in addr, std::string *message) {
+  std::cout << "[PCKG ERROR] Skipping invalid package from " << inet_ntoa(addr.sin_addr) << ":" << addr.sin_port\
+    << "." << *message << std::endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -96,12 +107,12 @@ int main(int argc, char *argv[]) {
   }
 
   Server server (parameters);
-  struct sigaction sig_handler {};
-  sig_handler.sa_handler = signal_handler;
-  sigemptyset(&sig_handler.sa_mask);
-  sig_handler.sa_flags = 0;
-
-  sigaction(SIGINT, &sig_handler, nullptr);
+//  sigaction sig_handler {};
+//  sig_handler.sa_handler = Server::signal_handler;
+//  sigemptyset(&sig_handler.sa_mask);
+//  sig_handler.sa_flags = 0;
+//
+//  sigaction(SIGINT, &sig_handler, nullptr);
 
   server.listen();
 

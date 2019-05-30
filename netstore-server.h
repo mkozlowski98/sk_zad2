@@ -25,6 +25,7 @@ class Server {
   void hello(uint64_t, sockaddr_in);
   void filtered_files(uint64_t, sockaddr_in, const char *);
   void send_file(uint64_t, sockaddr_in, const char *);
+  static void print_error(sockaddr_in, std::string*);
 };
 
 #endif //ZAD2_NETSTORE_SERVER_H

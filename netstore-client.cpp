@@ -3,6 +3,18 @@
 
 Client::Client(struct client_param parameters, uint64_t _seq): parameters(parameters), cmd_seq(_seq), sock {SOCK_DGRAM} {}
 
+std::vector<std::string> Client::get_command() {
+  std::vector<std::string> line;
+  std::string command;
+  getline(std::cin, command);
+  std::transform(command.begin(), command.end(), command.begin(), ::tolower);
+  std::stringstream stream(command);
+  while (getline(stream, command, ' ')) {
+    line.push_back(command);
+  }
+  return line;
+}
+
 void Client::connect() {
   sock.enable_broadcasting();
   sock.set_address(parameters.mcast_addr, parameters.cmd_port);
@@ -64,18 +76,6 @@ void Client::send_search(std::string data) {
   print_files();
 }
 
-std::vector<std::string> Client::get_command() {
-  std::vector<std::string> line;
-  std::string command;
-  getline(std::cin, command);
-  std::transform(command.begin(), command.end(), command.begin(), ::tolower);
-  std::stringstream stream(command);
-  while (getline(stream, command, ' ')) {
-    line.push_back(command);
-  }
-  return line;
-}
-
 void Client::found_files(char * addr, char * data) {
   std::stringstream stream(data);
   std::string addr_str(addr);
@@ -103,6 +103,9 @@ void Client::send_fetch(std::string data) {
     sockaddr_in rec_addr{};
     Cmplx_cmd cmplx_cmd{};
     fetch_sock.set_address(addr_str.data(), parameters.cmd_port);
+    timeval timeout{};
+    timeout.tv_sec = parameters.timeout / 1000;
+    fetch_sock.set_timeout(timeout);
     if (send(fetch_sock.sock_no, fetch_sock.local_addr, Simpl_cmd(global::cmd_message["GET"], cmd_seq, &data)) < 0)
       syserr("send");
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0)

@@ -2,7 +2,6 @@
 #define ZAD2_NETSTORE_CLIENT_H
 
 #include <chrono>
-#include <algorithm>
 #include <sstream>
 #include <vector>
 #include "sock.h"
@@ -19,6 +18,7 @@ class Client {
  public:
   Client(struct client_param, uint64_t);
 
+  std::vector<std::string> get_command();
   void connect();
   template <typename clock>
   unsigned int get_diff(std::chrono::time_point<clock>);
@@ -26,7 +26,6 @@ class Client {
   void set_recvtime(timeval*, std::chrono::time_point<clock>);
   void send_discover();
   void send_search(std::string);
-  std::vector<std::string> get_command();
   void found_files(char *, char *);
   void print_files();
   void send_fetch(std::string);
