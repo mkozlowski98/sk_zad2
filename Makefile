@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -O2
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -O2
 LDFLAGS = -std=c++17 -Wall -Wextra -O2
-LFLAGS = -lstdc++fs
+LFLAGS = -lstdc++fs -pthread
 
 all: $(TARGETS)
 

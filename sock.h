@@ -4,6 +4,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/types.h>
+#include <fcntl.h>
 
 #define MULTICAST_TTL 5
 
@@ -20,7 +22,7 @@ class Sock {
   void enable_broadcasting();
   void set_address(char* addr, in_port_t port);
   void set_timeout(timeval& timeval);
-  uint64_t tcp_socket();
+  uint64_t tcp_socket(char *);
 };
 
 #endif //ZAD2_SOCK_H

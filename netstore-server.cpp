@@ -1,3 +1,4 @@
+#include <thread>
 #include "netstore-server.h"
 
 Server::Server(struct server_param _parameters): parameters(_parameters), sock{SOCK_DGRAM} {}
@@ -8,7 +9,7 @@ Server::~Server() {
   close(sock.sock_no);
 }
 
-void Server::listen() {
+void Server::start_listening() {
   list_files();
   connect();
   std::cout << "Listening\n";
@@ -84,10 +85,36 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
     return;
   }
   Sock send_sock{SOCK_STREAM};
-  uint64_t port = send_sock.tcp_socket();
-  std::cout << "Port: " << port << std::endl;
+  uint64_t port = send_sock.tcp_socket(inet_ntoa(addr.sin_addr));
   if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, std::string(data))) < 0)
     syserr("send in server");
+  std::thread thread(handle_send, std::ref(send_sock), std::string(data), std::ref(parameters.timeout));
+
+  thread.join();
+}
+
+void Server::handle_send(Sock &tcp_sock, std::string file, unsigned int &timeout) {
+  std::cout << tcp_sock.sock_no << " " << inet_ntoa(tcp_sock.local_addr.sin_addr) << std::endl;
+  sockaddr_in addr{};
+  auto len = (socklen_t) sizeof(addr);
+  int msgsock = 0;
+//  timeval timeout{};
+//  timeout.tv_sec = parameters.timeout;
+//  tcp_sock.set_timeout(timeout);
+  int backlog = 1;
+  if (listen(tcp_sock.sock_no, backlog) < 0)
+    syserr("listen");
+
+  fcntl(tcp_sock.sock_no, F_SETFL, O_NONBLOCK);
+
+  auto time = std::chrono::system_clock::now();
+  while (get_diff(time) < timeout) {
+    msgsock = accept(tcp_sock.sock_no, (sockaddr *)&addr, &len);
+    if (msgsock >= 0)
+      break;
+  }
+
+  std::cout << msgsock << std::endl;
 }
 
 void Server::print_error(sockaddr_in addr, std::string *message) {
@@ -114,7 +141,7 @@ int main(int argc, char *argv[]) {
 //
 //  sigaction(SIGINT, &sig_handler, nullptr);
 
-  server.listen();
+  server.start_listening();
 
   exit(EXIT_SUCCESS);
 }

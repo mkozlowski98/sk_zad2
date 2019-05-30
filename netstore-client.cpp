@@ -21,13 +21,6 @@ void Client::connect() {
 }
 
 template <typename clock>
-unsigned int Client::get_diff(std::chrono::time_point<clock> time) {
-  auto time_now = std::chrono::system_clock::now();
-  auto milisecs = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time).count();
-  return milisecs;
-}
-
-template <typename clock>
 void Client::set_recvtime(timeval *recv_timeout, std::chrono::time_point<clock> time) {
   auto time_now = std::chrono::system_clock::now();
   auto milisecs = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time).count();
@@ -108,11 +101,23 @@ void Client::send_fetch(std::string data) {
     fetch_sock.set_timeout(timeout);
     if (send(fetch_sock.sock_no, fetch_sock.local_addr, Simpl_cmd(global::cmd_message["GET"], cmd_seq, &data)) < 0)
       syserr("send");
-    if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0)
-      std::cout << "From: " << inet_ntoa(rec_addr.sin_addr) << " tcp socket on port: " << be64toh(cmplx_cmd.param) <<\
-        " and file: " << cmplx_cmd.data << std::endl;
+    if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
+      fetch_sock.set_address(inet_ntoa(rec_addr.sin_addr), (in_port_t) cmplx_cmd.param);
+      if (::connect(fetch_sock.sock_no, (sockaddr *)&(fetch_sock.local_addr), sizeof(fetch_sock.local_addr)) < 0)
+        syserr("connect");
+    }
   } else
     std::cout << "file doesn't exist" << std::endl;
+}
+
+void Client::send_upload(std::string data) {
+  if (data[0] != '/') {
+
+  }
+}
+
+void Client::send_remove(std::string data) {
+
 }
 
 int main(int argc, char *argv[]) {
@@ -137,6 +142,10 @@ int main(int argc, char *argv[]) {
         client.send_search(line[1]);
       if (line[0] == "fetch")
         client.send_fetch(line[1]);
+      if (line[0] == "upload")
+        client.send_upload(line[1]);
+      if (line[0] == "remove")
+        client.send_remove(line[1]);
     } else if (line.size() == 1) {
       if (line[0] == "discover")
         client.send_discover();

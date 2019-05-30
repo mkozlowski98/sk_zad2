@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/time.h>
+#include <chrono>
 
 #define TIMEOUT 5000
 #define MAX_SPACE 52428800
@@ -51,5 +53,12 @@ ssize_t send(int sock, struct sockaddr_in addr, T cmd) {
   socklen_t rcva_len;
   rcva_len = (socklen_t) sizeof(addr);
   return sendto(sock, (char *)&cmd, sizeof cmd, 0, (struct sockaddr *)&addr, rcva_len);
+}
+
+template <typename clock>
+unsigned int get_diff(std::chrono::time_point<clock> time) {
+  auto time_now = std::chrono::system_clock::now();
+  auto millisecs = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time).count();
+  return millisecs;
 }
 #endif //ZAD2_GLOBALS_H

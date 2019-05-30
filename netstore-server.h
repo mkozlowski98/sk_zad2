@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <filesystem>
 #include <iterator>
+#include <thread>
 #include "sock.h"
 #include "globals.h"
 #include "messages.h"
@@ -19,12 +20,13 @@ class Server {
   Server(struct server_param);
   ~Server();
 
-  void listen();
+  void start_listening();
   void connect();
   void list_files();
   void hello(uint64_t, sockaddr_in);
   void filtered_files(uint64_t, sockaddr_in, const char *);
   void send_file(uint64_t, sockaddr_in, const char *);
+  static void handle_send (Sock&, std::string, unsigned int&);
   static void print_error(sockaddr_in, std::string*);
 };
 

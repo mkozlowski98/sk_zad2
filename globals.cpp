@@ -30,6 +30,8 @@ bool server_parse(int argc, char **argv, struct server_param *parameters) {
       case '?':
         std::cout << "unknown parameter\n";
         return false;
+      default:
+        return false;
     }
   }
 
@@ -60,10 +62,12 @@ bool client_parse(int argc, char *argv[], struct client_param *parameters) {
         timeout = atoi(optarg);
         if (timeout <= 0 || timeout > 300)
           return false;
-        parameters->timeout = (unsigned int) (timeout * 1000);
+        parameters->timeout = (unsigned int) timeout * 1000;
         break;
       case '?':
         printf("unknown parameter\n");
+        return false;
+      default:
         return false;
     }
   }
