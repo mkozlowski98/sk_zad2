@@ -77,10 +77,10 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data
 }
 
 void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
-  Sock send_sock(SOCK_STREAM);
+  Sock send_sock{SOCK_STREAM};
   uint64_t port = send_sock.tcp_socket();
-  std::cout << port << std::endl;
-  if (send(send_sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, std::string(data))) < 0)
+  std::cout << "Port: " << port << std::endl;
+  if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, std::string(data))) < 0)
     syserr("send in server");
 }
 

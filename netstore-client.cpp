@@ -100,9 +100,14 @@ void Client::send_fetch(std::string data) {
 
   if (addr_str != global::empty_str) {
     Sock fetch_sock {SOCK_DGRAM};
+    sockaddr_in rec_addr{};
+    Cmplx_cmd cmplx_cmd{};
     fetch_sock.set_address(addr_str.data(), parameters.cmd_port);
     if (send(fetch_sock.sock_no, fetch_sock.local_addr, Simpl_cmd(global::cmd_message["GET"], cmd_seq, &data)) < 0)
       syserr("send");
+    if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0)
+      std::cout << "From: " << inet_ntoa(rec_addr.sin_addr) << " tcp socket on port: " << be64toh(cmplx_cmd.param) <<\
+        " and file: " << cmplx_cmd.data << std::endl;
   } else
     std::cout << "file doesn't exist" << std::endl;
 }

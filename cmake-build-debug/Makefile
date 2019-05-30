@@ -231,32 +231,32 @@ netstore-server.cpp.s:
 	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.cpp.s
 .PHONY : netstore-server.cpp.s
 
-structures.o: structures.cpp.o
+sock.o: sock.cpp.o
 
-.PHONY : structures.o
+.PHONY : sock.o
 
 # target to build an object file
-structures.cpp.o:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/structures.cpp.o
-.PHONY : structures.cpp.o
+sock.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/sock.cpp.o
+.PHONY : sock.cpp.o
 
-structures.i: structures.cpp.i
+sock.i: sock.cpp.i
 
-.PHONY : structures.i
+.PHONY : sock.i
 
 # target to preprocess a source file
-structures.cpp.i:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/structures.cpp.i
-.PHONY : structures.cpp.i
+sock.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/sock.cpp.i
+.PHONY : sock.cpp.i
 
-structures.s: structures.cpp.s
+sock.s: sock.cpp.s
 
-.PHONY : structures.s
+.PHONY : sock.s
 
 # target to generate assembly for a file
-structures.cpp.s:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/structures.cpp.s
-.PHONY : structures.cpp.s
+sock.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/sock.cpp.s
+.PHONY : sock.cpp.s
 
 # Help Target
 help:
@@ -279,9 +279,9 @@ help:
 	@echo "... netstore-server.o"
 	@echo "... netstore-server.i"
 	@echo "... netstore-server.s"
-	@echo "... structures.o"
-	@echo "... structures.i"
-	@echo "... structures.s"
+	@echo "... sock.o"
+	@echo "... sock.i"
+	@echo "... sock.s"
 .PHONY : help
 
 

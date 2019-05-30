@@ -108,10 +108,10 @@
 		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-server.h">
 			<Option target="zad2"/>
 		</Unit>
-		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/structures.cpp">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/sock.cpp">
 			<Option target="zad2"/>
 		</Unit>
-		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/structures.h">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/sock.h">
 			<Option target="zad2"/>
 		</Unit>
 		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/CMakeLists.txt">

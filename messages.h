@@ -7,7 +7,7 @@
 
 class __attribute__((__packed__)) Simpl_cmd {
  public:
-  char cmd[10];
+  char cmd[11];
   uint64_t cmd_seq;
   char data[DATA_SIZE];
 
@@ -17,7 +17,7 @@ class __attribute__((__packed__)) Simpl_cmd {
 
 class __attribute__((__packed__)) Cmplx_cmd {
  public:
-  char cmd[10];
+  char cmd[11];
   uint64_t cmd_seq;
   char data[DATA_SIZE];
   uint64_t param;

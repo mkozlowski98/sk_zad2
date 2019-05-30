@@ -8,7 +8,7 @@ Sock::Sock(int type) {
 }
 
 void Sock::attach_to_multicast(char *mcast_addr) {
-  struct ip_mreq ip_mreq;
+  struct ip_mreq ip_mreq {};
   optval = 1;
   ip_mreq.imr_interface.s_addr = htonl(INADDR_ANY);
   if (inet_aton(mcast_addr, &ip_mreq.imr_multiaddr) == 0)
@@ -57,9 +57,8 @@ uint64_t Sock::tcp_socket() {
   local_addr.sin_port = 0;
   if (bind(sock_no, (struct sockaddr *)&local_addr, sizeof(local_addr)) < 0)
     syserr("bind");
-  sockaddr_in my_addr {};
-  socklen_t len = sizeof(my_addr);
-  if (getsockname(sock_no, (struct sockaddr *)&my_addr, &len) < 0)
+  socklen_t len = sizeof(local_addr);
+  if (getsockname(sock_no, (struct sockaddr *)&local_addr, &len) < 0)
     syserr("getsockname");
   return ntohs(local_addr.sin_port);
 }
