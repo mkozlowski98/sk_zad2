@@ -102,10 +102,11 @@ void Client::send_fetch(std::string data) {
     if (send(fetch_sock.sock_no, fetch_sock.local_addr, Simpl_cmd(global::cmd_message["GET"], cmd_seq, data)) < 0)
       syserr("send");
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
+      close(fetch_sock.sock_no);
       unsigned short port = be64toh(cmplx_cmd.param);
       std::string addr = inet_ntoa(rec_addr.sin_addr);
       std::string path = std::string(parameters.out_fldr) + data;
-      std::thread thread(download_file, addr, port, path);
+      std::thread thread(download_file, addr, port, path, data);
       thread.join();
     }
   } else
@@ -113,29 +114,40 @@ void Client::send_fetch(std::string data) {
 }
 
 
-void Client::download_file(std::string addr, unsigned short port, std::string path) {
+void Client::download_file(std::string addr, unsigned short port, std::string path, std::string file) {
   Sock tcp_sock{SOCK_STREAM};
   tcp_sock.set_address(addr.data(), port);
-  if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0)
+  if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0) {
+    std::cout << "File " << file << " downloading failed (" << addr << ":" << port << ") error in connect" << std::endl;
     syserr("connect");
-  std::fstream fd(path.c_str(), std::ios::out);
-  if (fd.is_open()) {
-    char *buffer;
-    buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
-    ssize_t len;
-    do {
-      if ((len = recv(tcp_sock.sock_no, (void *)buffer, BUFF_SIZE - 1, 0)) < 0)
-        syserr("read");
-      if (len > 0) {
-        fd.write(buffer, len);
+  } else {
+    std::fstream fd(path.c_str(), std::ios::out);
+    if (fd.is_open()) {
+      char *buffer;
+      buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
+      ssize_t len;
+      do {
+        if ((len = recv(tcp_sock.sock_no, (void *)buffer, BUFF_SIZE - 1, 0)) < 0) {
+          std::cout << "File " << file << " downloading failed (" << addr << ":" << port << ") error in read" << std::endl;
+          syserr("read");
+        }
+        if (len > 0) {
+          fd.write(buffer, len);
+        }
+      } while (len > 0);
+      free(buffer);
+      fd.close();
+      if (len == 0) {
+        std::cout << "File " << file << " downloaded (" << addr << ":" << port << ")" << std::endl;
       }
-    } while (len > 0);
-    free(buffer);
-    fd.close();
+    } else {
+      std::cout << "File " << file << " downloading failed (" << addr << ":" << port << ") couldn't create file" << std::endl;
+    }
   }
 }
 
 void Client::send_upload(std::string data) {
+  std::string path;
   if (data[0] != '/') {
 
   }

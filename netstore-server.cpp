@@ -101,7 +101,6 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, char *data) {
   if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, data_str)) < 0)
     syserr("send in server");
   std::string path = std::string(parameters.shrd_fldr) + std::string(data);
-
   std::thread thread(handle_send, send_sock, path, parameters.timeout);
   if (thread.joinable()) {
     thread.detach();
@@ -136,7 +135,6 @@ void Server::handle_send(Sock tcp_sock, std::string path, unsigned int timeout) 
     if (!fd.is_open())
       syserr("fopen");
     else {
-      std::cout << "file opened" << std::endl;
       while (!fd.eof()) {
         memset(buffer, 0, 1024);
         fd.read(buffer, 1024);
@@ -146,8 +144,8 @@ void Server::handle_send(Sock tcp_sock, std::string path, unsigned int timeout) 
 
       fd.close();
     }
+    close(msgsock);
   }
-  close(msgsock);
 }
 
 void Server::remove_file(sockaddr_in addr, char * file) {
@@ -174,6 +172,7 @@ void Server::remove_file(sockaddr_in addr, char * file) {
 }
 
 void Server::add_file(uint64_t cmd_seq, sockaddr_in addr, char * file, uint64_t size) {
+  std::string path = std::string(parameters.shrd_fldr) + std::string(file);
 
 }
 
