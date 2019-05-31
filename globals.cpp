@@ -12,17 +12,17 @@ bool server_parse(int argc, char **argv, struct server_param *parameters) {
         break;
       case 'p':
         p = 1;
-        parameters->cmd_port = (in_port_t) atoi(optarg);
+        parameters->cmd_port = std::stoi(optarg);
         break;
       case 'b':
-        parameters->max_space = (unsigned long long) atoi(optarg);
+        parameters->max_space = (unsigned long long) std::stol(optarg);
         break;
       case 'f':
         f = 1;
         parameters->shrd_fldr = optarg;
         break;
       case 't':
-        timeout = atoi(optarg);
+        timeout = std::stoi(optarg);
         if (timeout < 0 || timeout > 300)
           return false;
         parameters->timeout = (unsigned int) timeout * 1000;
@@ -52,14 +52,14 @@ bool client_parse(int argc, char *argv[], struct client_param *parameters) {
         break;
       case 'p':
         p = 1;
-        parameters->cmd_port = (in_port_t) atoi(optarg);
+        parameters->cmd_port = std::stoi(optarg);
         break;
       case 'o':
         o = 1;
         parameters->out_fldr = optarg;
         break;
       case 't':
-        timeout = atoi(optarg);
+        timeout = std::stoi(optarg);
         if (timeout <= 0 || timeout > 300)
           return false;
         parameters->timeout = (unsigned int) timeout * 1000;

@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <vector>
+#include <netdb.h>
 #include "sock.h"
 #include "globals.h"
 #include "messages.h"
@@ -17,7 +18,7 @@ class Client {
  public:
   Client(struct client_param, uint64_t);
 
-  std::vector<std::string> get_command();
+  static std::vector<std::string> get_command();
   void connect();
   template <typename clock>
   void set_recvtime(timeval*, std::chrono::time_point<clock>);
@@ -26,6 +27,8 @@ class Client {
   void found_files(char *, char *);
   void print_files();
   void send_fetch(std::string);
+  void connect_to_tcp(std::string&, std::string&);
+  static void download_file(std::string, signed short&);
   void send_upload(std::string);
   void send_remove(std::string);
 };

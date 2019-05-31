@@ -1,4 +1,4 @@
-/snap/clion/70/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8 -G "CodeBlocks - Unix Makefiles" /home/koksu/studies/4_sem/sik/zad2
+/snap/clion/73/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8 -G "CodeBlocks - Unix Makefiles" /home/koksu/studies/4_sem/sik/zad2
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/koksu/studies/4_sem/sik/zad2/cmake-build-debug

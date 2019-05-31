@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <filesystem>
 #include <iterator>
-#include <thread>
 #include "sock.h"
 #include "globals.h"
 #include "messages.h"

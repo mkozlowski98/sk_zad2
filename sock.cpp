@@ -21,7 +21,7 @@ void Sock::attach_to_multicast(char *mcast_addr) {
   //TODO set timeval for sending
 }
 
-void Sock::attach_to_port(in_port_t port) {
+void Sock::attach_to_port(short port) {
   local_addr.sin_family = AF_INET;
   local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   local_addr.sin_port = htons(port);
@@ -39,7 +39,7 @@ void Sock::enable_broadcasting() {
     syserr("setsockopt multicast ttl");
 }
 
-void Sock::set_address(char *addr, in_port_t port) {
+void Sock::set_address(char *addr, short port) {
   local_addr.sin_family = AF_INET;
   local_addr.sin_port = htons(port);
   if (inet_aton(addr, &local_addr.sin_addr) == 0)
@@ -51,15 +51,14 @@ void Sock::set_timeout(timeval &timeout) {
     syserr("setsockopt failed");
 }
 
-uint64_t Sock::tcp_socket(char * addr) {
+uint64_t Sock::tcp_socket() {
   local_addr.sin_family = AF_INET;
-  if (inet_aton(addr, &local_addr.sin_addr) == 0)
-    syserr("inet_aton");
+  local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   local_addr.sin_port = 0;
   if (bind(sock_no, (struct sockaddr *)&local_addr, sizeof(local_addr)) < 0)
     syserr("bind");
   socklen_t len = sizeof(local_addr);
   if (getsockname(sock_no, (struct sockaddr *)&local_addr, &len) < 0)
     syserr("getsockname");
-  return ntohs(local_addr.sin_port);
+  return local_addr.sin_port;
 }

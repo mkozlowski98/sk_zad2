@@ -35,7 +35,7 @@ void Client::send_discover() {
   memset(&rec_addr, 0, sizeof rec_addr);
   timeval recv_timeout {};
 
-  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["HELLO"], cmd_seq, &global::empty_str)) < 0)
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["HELLO"], cmd_seq, global::empty_str)) < 0)
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
@@ -56,7 +56,7 @@ void Client::send_search(std::string data) {
   memset(&rec_addr, 0, sizeof rec_addr);
   timeval recv_timeout {};
 
-  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["LIST"], cmd_seq, &data)) < 0)
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["LIST"], cmd_seq, data)) < 0)
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
@@ -99,15 +99,54 @@ void Client::send_fetch(std::string data) {
     timeval timeout{};
     timeout.tv_sec = parameters.timeout / 1000;
     fetch_sock.set_timeout(timeout);
-    if (send(fetch_sock.sock_no, fetch_sock.local_addr, Simpl_cmd(global::cmd_message["GET"], cmd_seq, &data)) < 0)
+    if (send(fetch_sock.sock_no, fetch_sock.local_addr, Simpl_cmd(global::cmd_message["GET"], cmd_seq, data)) < 0)
       syserr("send");
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
-      fetch_sock.set_address(inet_ntoa(rec_addr.sin_addr), (in_port_t) cmplx_cmd.param);
-      if (::connect(fetch_sock.sock_no, (sockaddr *)&(fetch_sock.local_addr), sizeof(fetch_sock.local_addr)) < 0)
-        syserr("connect");
+      std::cout << "answer from server: " << be64toh(cmplx_cmd.param) << std::endl;
+      signed short port = be64toh(cmplx_cmd.param);
+      std::string port_str(std::to_string(port));
+      connect_to_tcp(addr_str, port_str);
+
+//      std::thread thread(download_file, rec_addr.sin_addr.s_addr, std::ref(port));
+//      thread.join();
+//      std::cout << "ended" << std::endl;
     }
   } else
     std::cout << "file doesn't exist" << std::endl;
+}
+
+void Client::connect_to_tcp(std::string &addr, std::string &port) {
+  int err;
+  addrinfo addr_hints{};
+  addrinfo *addr_result;
+
+  memset(&addr_hints, 0, sizeof(struct addrinfo));
+  addr_hints.ai_family = AF_INET;
+  addr_hints.ai_socktype = SOCK_STREAM;
+  addr_hints.ai_protocol = IPPROTO_TCP;
+  err = getaddrinfo(addr.c_str(), port.c_str(), &addr_hints, &addr_result);
+
+  if (err == EAI_SYSTEM)
+    syserr("getaddrinfo: %s", gai_strerror(err));
+  else if (err != 0)
+    fatal("getaddrinfo: %s", gai_strerror(err));
+
+  Sock tcp_sock{addr_result->ai_socktype};
+  tcp_sock.set_address(addr.c_str(), )
+
+  if (::connect(tcp_sock.sock_no, addr_result->ai_addr, addr_result->ai_addrlen) < 0)
+    syserr("connect");
+
+  freeaddrinfo(addr_result);
+
+}
+
+void Client::download_file(std::string addr, signed short &port) {
+  Sock tcp_sock{SOCK_STREAM};
+  std::cout << addr << " " << port << std::endl;
+  tcp_sock.set_address(addr.data(), port);
+  if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0)
+    syserr("connect");
 }
 
 void Client::send_upload(std::string data) {

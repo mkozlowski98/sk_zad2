@@ -52,7 +52,8 @@ void Server::list_files() {
 }
 
 void Server::hello(uint64_t cmd_seq, sockaddr_in addr) {
-  if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["GOOD_DAY"], cmd_seq, parameters.max_space, parameters.mcast_addr)) < 0)
+  std::string mcast_addr(parameters.mcast_addr);
+  if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["GOOD_DAY"], cmd_seq, parameters.max_space, mcast_addr)) < 0)
     syserr("send in server");
 }
 
@@ -63,7 +64,7 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data
     for (auto &it: files_list) {
       if (it.find(reg) != std::string::npos) {
         if (str_to_send.length() + it.length() > UDP_SIZE) {
-          if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, &str_to_send)) < 0)
+          if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send)) < 0)
             syserr("send in server");
           str_to_send.clear();
         }
@@ -71,7 +72,7 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data
       }
     }
     if (!str_to_send.empty())
-      if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, &str_to_send)) < 0)
+      if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send)) < 0)
         syserr("send in server");
   }
 
@@ -85,36 +86,63 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
     return;
   }
   Sock send_sock{SOCK_STREAM};
-  uint64_t port = send_sock.tcp_socket(inet_ntoa(addr.sin_addr));
-  if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, std::string(data))) < 0)
+  uint64_t port = send_sock.tcp_socket();
+  std::cout << "Port: " << port << std::endl;
+  std::string data_str(data);
+  if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, data_str)) < 0)
     syserr("send in server");
-  std::thread thread(handle_send, std::ref(send_sock), std::string(data), std::ref(parameters.timeout));
-
-  thread.join();
-}
-
-void Server::handle_send(Sock &tcp_sock, std::string file, unsigned int &timeout) {
-  std::cout << tcp_sock.sock_no << " " << inet_ntoa(tcp_sock.local_addr.sin_addr) << std::endl;
-  sockaddr_in addr{};
-  auto len = (socklen_t) sizeof(addr);
+  std::cout << send_sock.sock_no << " " << send_sock.local_addr.sin_port << std::endl;
+  sockaddr_in rec_addr{};
+  socklen_t len;
   int msgsock = 0;
 //  timeval timeout{};
 //  timeout.tv_sec = parameters.timeout;
 //  tcp_sock.set_timeout(timeout);
-  int backlog = 1;
-  if (listen(tcp_sock.sock_no, backlog) < 0)
+  if (listen(send_sock.sock_no, SOMAXCONN) < 0)
+    syserr("listen");
+
+  fcntl(send_sock.sock_no, F_SETFL, O_NONBLOCK);
+
+  auto time = std::chrono::system_clock::now();
+  while (get_diff(time) < parameters.timeout) {
+    len = sizeof(rec_addr);
+    msgsock = accept(send_sock.sock_no, (sockaddr *)&rec_addr, &len);
+    if (msgsock >= 0) {
+      std::cout << "Connected" << std::endl;
+      break;
+    }
+  }
+
+  std::cout << "final: " << msgsock << std::endl;
+//  std::thread thread(handle_send, std::ref(send_sock), std::string(data), std::ref(parameters.timeout));
+
+//  thread.join();
+}
+
+void Server::handle_send(Sock &tcp_sock, std::string file, unsigned int &timeout) {
+  std::cout << tcp_sock.sock_no << " " << tcp_sock.local_addr.sin_port << std::endl;
+  sockaddr_in addr{};
+  socklen_t len;
+  int msgsock = 0;
+//  timeval timeout{};
+//  timeout.tv_sec = parameters.timeout;
+//  tcp_sock.set_timeout(timeout);
+  if (listen(tcp_sock.sock_no, SOMAXCONN) < 0)
     syserr("listen");
 
   fcntl(tcp_sock.sock_no, F_SETFL, O_NONBLOCK);
 
   auto time = std::chrono::system_clock::now();
   while (get_diff(time) < timeout) {
+    len = sizeof(addr);
     msgsock = accept(tcp_sock.sock_no, (sockaddr *)&addr, &len);
-    if (msgsock >= 0)
+    if (msgsock >= 0) {
+      std::cout << "Connected" << std::endl;
       break;
+    }
   }
 
-  std::cout << msgsock << std::endl;
+  std::cout << "final: " << msgsock << std::endl;
 }
 
 void Server::print_error(sockaddr_in addr, std::string *message) {

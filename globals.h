@@ -6,6 +6,7 @@
 #include <iostream>
 #include <map>
 #include <algorithm>
+#include <thread>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
@@ -25,7 +26,7 @@ namespace global {
 
 struct server_param {
   char *mcast_addr;
-  in_port_t cmd_port;
+  short cmd_port;
   unsigned long long max_space;
   char *shrd_fldr;
   unsigned int timeout;
@@ -33,7 +34,7 @@ struct server_param {
 
 struct client_param {
   char *mcast_addr;
-  in_port_t cmd_port;
+  short cmd_port;
   char *out_fldr;
   unsigned int timeout;
 };
