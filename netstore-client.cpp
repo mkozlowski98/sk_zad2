@@ -29,7 +29,8 @@ void Client::set_recvtime(timeval *recv_timeout, std::chrono::time_point<clock> 
   recv_timeout->tv_usec = (milisecs % 1000) * 1000;
 }
 
-void Client::send_discover() {
+void Client::send_discover(bool show) {
+  group.clear();
   sockaddr_in rec_addr {};
   Cmplx_cmd cmplx_cmd {};
   memset(&rec_addr, 0, sizeof rec_addr);
@@ -43,10 +44,13 @@ void Client::send_discover() {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
     if (receive(sock.sock_no, rec_addr, cmplx_cmd) > 0) {
-      std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " (" << cmplx_cmd.data << ") with free space "\
-      << be64toh(cmplx_cmd.param) << std::endl;
+      group.insert(std::make_pair(be64toh(cmplx_cmd.param), rec_addr));
+      if (show)
+        std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " (" << cmplx_cmd.data << ") with free space "\
+          << be64toh(cmplx_cmd.param) << std::endl;
     }
   }
+  std::cout << group.begin()->first << std::endl;
 }
 
 void Client::send_search(std::string data) {
@@ -113,7 +117,6 @@ void Client::send_fetch(std::string data) {
     std::cout << "file doesn't exist" << std::endl;
 }
 
-
 void Client::download_file(std::string addr, unsigned short port, std::string path, std::string file) {
   Sock tcp_sock{SOCK_STREAM};
   tcp_sock.set_address(addr.data(), port);
@@ -148,14 +151,31 @@ void Client::download_file(std::string addr, unsigned short port, std::string pa
 
 void Client::send_upload(std::string data) {
   std::string path;
-  if (data[0] != '/') {
-
-  }
+  if (data[0] != '/')
+    path = parameters.out_fldr + data;
+  else
+    path = data;
+  if (std::filesystem::exists(path)) {
+    send_discover(false);
+    sockaddr_in addr = get_max_size();
+    uint64_t file_len;
+//    std::fstream fd (path, )
+  } else
+    std::cout << "File " << data << "does not exist" << std::endl;
 }
 
 void Client::send_remove(std::string data) {
   if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["DEL"], cmd_seq, data)) < 0)
     syserr("send");
+}
+
+sockaddr_in Client::get_max_size() {
+  sockaddr_in addr{};
+  unsigned long long size = 0;
+  for (auto it: group)
+    if (it.first > size)
+      addr = it.second;
+  return addr;
 }
 
 int main(int argc, char *argv[]) {
@@ -186,7 +206,7 @@ int main(int argc, char *argv[]) {
         client.send_remove(line[1]);
     } else if (line.size() == 1) {
       if (line[0] == "discover")
-        client.send_discover();
+        client.send_discover(true);
       if (line[0] == "search")
         client.send_search(global::empty_str);
       if (line[0] == "exit") //TODO close all sockets

@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <vector>
+#include <set>
 #include <netdb.h>
 #include "sock.h"
 #include "globals.h"
@@ -13,7 +14,9 @@ class Client {
   struct client_param parameters;
   uint64_t cmd_seq;
   Sock sock;
+  std::set<std::pair<unsigned long long, sockaddr_in>, std::greater<>> group;
   std::vector<std::pair<std::string, std::string>> files;
+  sockaddr_in get_max_size();
 
  public:
   Client(struct client_param, uint64_t);
@@ -22,7 +25,7 @@ class Client {
   void connect();
   template <typename clock>
   void set_recvtime(timeval*, std::chrono::time_point<clock>);
-  void send_discover();
+  void send_discover(bool);
   void send_search(std::string);
   void found_files(char *, char *);
   void print_files();

@@ -23,7 +23,7 @@ void Server::start_listening() {
     memset(&cmplx_cmd, 0, sizeof(cmplx_cmd));
     receive(sock.sock_no, addr, cmplx_cmd);
     message = cmplx_cmd.cmd;
-    std::cout << cmplx_cmd.cmd << " " << be64toh(cmplx_cmd.cmd_seq) << " addr: " << inet_ntoa(addr.sin_addr) << "\n";
+    std::cout << cmplx_cmd.cmd << " port: " << ntohs(addr.sin_port)<< " addr: " << inet_ntoa(addr.sin_addr) << "\n";
     if (message == global::cmd_message["HELLO"])
       hello(be64toh(cmplx_cmd.cmd_seq), addr);
     if (message == global::cmd_message["LIST"])

@@ -1,7 +1,6 @@
 #ifndef ZAD2_NETSTORE_SERVER_H
 #define ZAD2_NETSTORE_SERVER_H
 
-#include <filesystem>
 #include <iterator>
 #include "sock.h"
 #include "globals.h"
