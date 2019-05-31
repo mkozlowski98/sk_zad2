@@ -27,7 +27,7 @@ class Server {
   void filtered_files(uint64_t, sockaddr_in, char *);
   void send_file(uint64_t, sockaddr_in, char *);
   static void handle_send (Sock, std::string, unsigned int);
-  void remove_file(char *);
+  void remove_file(sockaddr_in, char *);
   static void print_error(sockaddr_in, std::string*);
 };
 

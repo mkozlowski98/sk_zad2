@@ -31,7 +31,7 @@ void Server::start_listening() {
     else if (message == global::cmd_message["GET"])
       send_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
     else if (message == global::cmd_message["DEL"])
-      remove_file(cmplx_cmd.data);
+      remove_file(addr, cmplx_cmd.data);
 
   }
 
@@ -144,14 +144,20 @@ void Server::handle_send(Sock tcp_sock, std::string path, unsigned int timeout) 
   close(msgsock);
 }
 
-void Server::remove_file(char * file) {
+void Server::remove_file(sockaddr_in addr, char * file) {
   std::string path = std::string(parameters.shrd_fldr) + std::string(file);
   std::cout << "path: " << path << std::endl;
   if (std::filesystem::exists(path)) {
     if (remove(path.c_str()) != 0)
-      std::cout << "remove failed" << std::endl;
-  } else
-    std::cout << "i don't have this file" << std::endl;
+      syserr("remove file");
+    else {
+      auto it = std::find(files_list.begin(), files_list.end(), std::string(file));
+      files_list.erase(it);
+    }
+  } else {
+    std::string message("trying to remove non-existent file");
+    print_error(addr, &message);
+  }
 }
 
 void Server::print_error(sockaddr_in addr, std::string *message) {
