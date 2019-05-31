@@ -22,7 +22,7 @@ class Sock {
   void enable_broadcasting();
   void set_address(char* addr, short port);
   void set_timeout(timeval& timeval);
-  uint64_t tcp_socket();
+  void tcp_socket();
 };
 
 #endif //ZAD2_SOCK_H

@@ -102,46 +102,18 @@ void Client::send_fetch(std::string data) {
     if (send(fetch_sock.sock_no, fetch_sock.local_addr, Simpl_cmd(global::cmd_message["GET"], cmd_seq, data)) < 0)
       syserr("send");
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
-      std::cout << "answer from server: " << be64toh(cmplx_cmd.param) << std::endl;
-      signed short port = be64toh(cmplx_cmd.param);
-      std::string port_str(std::to_string(port));
-      connect_to_tcp(addr_str, port_str);
-
-//      std::thread thread(download_file, rec_addr.sin_addr.s_addr, std::ref(port));
-//      thread.join();
-//      std::cout << "ended" << std::endl;
+      unsigned short port = be64toh(cmplx_cmd.param);
+      std::string addr = inet_ntoa(rec_addr.sin_addr);
+      std::thread thread(download_file, addr, std::ref(port));
+      thread.join();
     }
   } else
     std::cout << "file doesn't exist" << std::endl;
 }
 
-void Client::connect_to_tcp(std::string &addr, std::string &port) {
-  int err;
-  addrinfo addr_hints{};
-  addrinfo *addr_result;
 
-  memset(&addr_hints, 0, sizeof(struct addrinfo));
-  addr_hints.ai_family = AF_INET;
-  addr_hints.ai_socktype = SOCK_STREAM;
-  addr_hints.ai_protocol = IPPROTO_TCP;
-  err = getaddrinfo(addr.c_str(), port.c_str(), &addr_hints, &addr_result);
 
-  if (err == EAI_SYSTEM)
-    syserr("getaddrinfo: %s", gai_strerror(err));
-  else if (err != 0)
-    fatal("getaddrinfo: %s", gai_strerror(err));
-
-  Sock tcp_sock{addr_result->ai_socktype};
-  tcp_sock.set_address(addr.c_str(), )
-
-  if (::connect(tcp_sock.sock_no, addr_result->ai_addr, addr_result->ai_addrlen) < 0)
-    syserr("connect");
-
-  freeaddrinfo(addr_result);
-
-}
-
-void Client::download_file(std::string addr, signed short &port) {
+void Client::download_file(std::string addr, unsigned short &port) {
   Sock tcp_sock{SOCK_STREAM};
   std::cout << addr << " " << port << std::endl;
   tcp_sock.set_address(addr.data(), port);

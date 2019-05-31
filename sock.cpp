@@ -51,7 +51,7 @@ void Sock::set_timeout(timeval &timeout) {
     syserr("setsockopt failed");
 }
 
-uint64_t Sock::tcp_socket() {
+void Sock::tcp_socket() {
   local_addr.sin_family = AF_INET;
   local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   local_addr.sin_port = 0;
@@ -60,5 +60,4 @@ uint64_t Sock::tcp_socket() {
   socklen_t len = sizeof(local_addr);
   if (getsockname(sock_no, (struct sockaddr *)&local_addr, &len) < 0)
     syserr("getsockname");
-  return local_addr.sin_port;
 }

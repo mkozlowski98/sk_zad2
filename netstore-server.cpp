@@ -86,47 +86,21 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
     return;
   }
   Sock send_sock{SOCK_STREAM};
-  uint64_t port = send_sock.tcp_socket();
-  std::cout << "Port: " << port << std::endl;
+  send_sock.tcp_socket();
+  uint64_t port = ntohs(send_sock.local_addr.sin_port);
   std::string data_str(data);
   if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, data_str)) < 0)
     syserr("send in server");
-  std::cout << send_sock.sock_no << " " << send_sock.local_addr.sin_port << std::endl;
-  sockaddr_in rec_addr{};
-  socklen_t len;
-  int msgsock = 0;
-//  timeval timeout{};
-//  timeout.tv_sec = parameters.timeout;
-//  tcp_sock.set_timeout(timeout);
-  if (listen(send_sock.sock_no, SOMAXCONN) < 0)
-    syserr("listen");
+  std::thread thread(handle_send, std::ref(send_sock), std::string(data), std::ref(parameters.timeout));
 
-  fcntl(send_sock.sock_no, F_SETFL, O_NONBLOCK);
-
-  auto time = std::chrono::system_clock::now();
-  while (get_diff(time) < parameters.timeout) {
-    len = sizeof(rec_addr);
-    msgsock = accept(send_sock.sock_no, (sockaddr *)&rec_addr, &len);
-    if (msgsock >= 0) {
-      std::cout << "Connected" << std::endl;
-      break;
-    }
-  }
-
-  std::cout << "final: " << msgsock << std::endl;
-//  std::thread thread(handle_send, std::ref(send_sock), std::string(data), std::ref(parameters.timeout));
-
-//  thread.join();
+  thread.join();
 }
 
 void Server::handle_send(Sock &tcp_sock, std::string file, unsigned int &timeout) {
-  std::cout << tcp_sock.sock_no << " " << tcp_sock.local_addr.sin_port << std::endl;
   sockaddr_in addr{};
   socklen_t len;
   int msgsock = 0;
-//  timeval timeout{};
-//  timeout.tv_sec = parameters.timeout;
-//  tcp_sock.set_timeout(timeout);
+
   if (listen(tcp_sock.sock_no, SOMAXCONN) < 0)
     syserr("listen");
 
@@ -137,12 +111,9 @@ void Server::handle_send(Sock &tcp_sock, std::string file, unsigned int &timeout
     len = sizeof(addr);
     msgsock = accept(tcp_sock.sock_no, (sockaddr *)&addr, &len);
     if (msgsock >= 0) {
-      std::cout << "Connected" << std::endl;
       break;
     }
   }
-
-  std::cout << "final: " << msgsock << std::endl;
 }
 
 void Server::print_error(sockaddr_in addr, std::string *message) {
