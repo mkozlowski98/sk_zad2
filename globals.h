@@ -7,6 +7,7 @@
 #include <map>
 #include <algorithm>
 #include <thread>
+#include <fstream>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
@@ -15,13 +16,15 @@
 #define TIMEOUT 5000
 #define MAX_SPACE 52428800
 #define UDP_SIZE 65507
+#define BUFF_SIZE 1024
 
 namespace global {
   static std::string empty_str {};
   static std::map<std::string, std::string> cmd_message = {
       {"HELLO", "HELLO"}, {"GOOD_DAY", "GOOD_DAY"},
       {"LIST", "LIST"}, {"MY_LIST", "MY_LIST"},
-      {"GET", "GET"}, {"CONNECT_ME", "CONNECT_ME"}};
+      {"GET", "GET"}, {"CONNECT_ME", "CONNECT_ME"},
+      {"DEL", "DEL"}};
 }
 
 struct server_param {

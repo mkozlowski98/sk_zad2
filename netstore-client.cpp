@@ -104,7 +104,8 @@ void Client::send_fetch(std::string data) {
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
       unsigned short port = be64toh(cmplx_cmd.param);
       std::string addr = inet_ntoa(rec_addr.sin_addr);
-      std::thread thread(download_file, addr, std::ref(port));
+      std::string path = std::string(parameters.out_fldr) + data;
+      std::thread thread(download_file, addr, port, path);
       thread.join();
     }
   } else
@@ -112,13 +113,26 @@ void Client::send_fetch(std::string data) {
 }
 
 
-
-void Client::download_file(std::string addr, unsigned short &port) {
+void Client::download_file(std::string addr, unsigned short port, std::string path) {
   Sock tcp_sock{SOCK_STREAM};
-  std::cout << addr << " " << port << std::endl;
   tcp_sock.set_address(addr.data(), port);
   if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0)
     syserr("connect");
+  std::fstream fd(path.c_str(), std::ios::out);
+  if (fd.is_open()) {
+    char *buffer;
+    buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
+    ssize_t len;
+    do {
+      if ((len = recv(tcp_sock.sock_no, (void *)buffer, BUFF_SIZE - 1, 0)) < 0)
+        syserr("read");
+      if (len > 0) {
+        fd.write(buffer, len);
+      }
+    } while (len > 0);
+    free(buffer);
+    fd.close();
+  }
 }
 
 void Client::send_upload(std::string data) {
@@ -128,7 +142,8 @@ void Client::send_upload(std::string data) {
 }
 
 void Client::send_remove(std::string data) {
-
+  if (send(sock.sock_no, sock.local_addr, Simpl_cmd(global::cmd_message["DEL"], cmd_seq, data)) < 0)
+    syserr("send");
 }
 
 int main(int argc, char *argv[]) {

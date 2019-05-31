@@ -27,7 +27,7 @@ class Client {
   void found_files(char *, char *);
   void print_files();
   void send_fetch(std::string);
-  static void download_file(std::string, unsigned short&);
+  static void download_file(std::string, unsigned short, std::string);
   void send_upload(std::string);
   void send_remove(std::string);
 };

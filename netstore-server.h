@@ -14,6 +14,7 @@ class Server {
   struct server_param parameters;
   Sock sock;
   std::vector<std::string> files_list;
+  std::vector<std::thread> threads;
 
  public:
   Server(struct server_param);
@@ -23,9 +24,10 @@ class Server {
   void connect();
   void list_files();
   void hello(uint64_t, sockaddr_in);
-  void filtered_files(uint64_t, sockaddr_in, const char *);
-  void send_file(uint64_t, sockaddr_in, const char *);
-  static void handle_send (Sock&, std::string, unsigned int&);
+  void filtered_files(uint64_t, sockaddr_in, char *);
+  void send_file(uint64_t, sockaddr_in, char *);
+  static void handle_send (Sock, std::string, unsigned int);
+  void remove_file(char *);
   static void print_error(sockaddr_in, std::string*);
 };
 

@@ -30,6 +30,9 @@ void Server::start_listening() {
       filtered_files(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
     else if (message == global::cmd_message["GET"])
       send_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
+    else if (message == global::cmd_message["DEL"])
+      remove_file(cmplx_cmd.data);
+
   }
 
 }
@@ -57,7 +60,7 @@ void Server::hello(uint64_t cmd_seq, sockaddr_in addr) {
     syserr("send in server");
 }
 
-void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
+void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, char *data) {
   if (!files_list.empty()) {
     std::string reg(data);
     std::string str_to_send{};
@@ -78,7 +81,7 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, const char *data
 
 }
 
-void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
+void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, char *data) {
   auto it = std::find(files_list.begin(), files_list.end(), std::string(data));
   if (it == files_list.end()) {
     std::string message("Trying to download non-existent file");
@@ -91,12 +94,16 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, const char *data) {
   std::string data_str(data);
   if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, data_str)) < 0)
     syserr("send in server");
-  std::thread thread(handle_send, std::ref(send_sock), std::string(data), std::ref(parameters.timeout));
+  std::string path = std::string(parameters.shrd_fldr) + std::string(data);
 
-  thread.join();
+  std::thread thread(handle_send, send_sock, path, parameters.timeout);
+  if (thread.joinable()) {
+    thread.detach();
+    threads.emplace_back(std::move(thread));
+  }
 }
 
-void Server::handle_send(Sock &tcp_sock, std::string file, unsigned int &timeout) {
+void Server::handle_send(Sock tcp_sock, std::string path, unsigned int timeout) {
   sockaddr_in addr{};
   socklen_t len;
   int msgsock = 0;
@@ -107,13 +114,44 @@ void Server::handle_send(Sock &tcp_sock, std::string file, unsigned int &timeout
   fcntl(tcp_sock.sock_no, F_SETFL, O_NONBLOCK);
 
   auto time = std::chrono::system_clock::now();
-  while (get_diff(time) < timeout) {
+  while (get_diff(time) < timeout) { // wait for connection from client
     len = sizeof(addr);
     msgsock = accept(tcp_sock.sock_no, (sockaddr *)&addr, &len);
     if (msgsock >= 0) {
       break;
     }
   }
+  close(tcp_sock.sock_no);
+
+  if (msgsock > 0) { //connection established, send file
+    std::fstream fd(path.c_str(), std::ios::in);
+    char *buffer;
+    buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
+    if (!fd.is_open())
+      syserr("fopen");
+    else {
+      std::cout << "file opened" << std::endl;
+      while (!fd.eof()) {
+        memset(buffer, 0, 1024);
+        fd.read(buffer, 1024);
+        if (send(msgsock, (void *)buffer, fd.gcount(), 0) < 0)
+          syserr("send in server");
+      }
+
+      fd.close();
+    }
+  }
+  close(msgsock);
+}
+
+void Server::remove_file(char * file) {
+  std::string path = std::string(parameters.shrd_fldr) + std::string(file);
+  std::cout << "path: " << path << std::endl;
+  if (std::filesystem::exists(path)) {
+    if (remove(path.c_str()) != 0)
+      std::cout << "remove failed" << std::endl;
+  } else
+    std::cout << "i don't have this file" << std::endl;
 }
 
 void Server::print_error(sockaddr_in addr, std::string *message) {
