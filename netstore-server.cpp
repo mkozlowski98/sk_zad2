@@ -32,6 +32,12 @@ void Server::start_listening() {
       send_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
     else if (message == global::cmd_message["DEL"])
       remove_file(addr, cmplx_cmd.data);
+    else if (message == global::cmd_message["ADD"])
+      add_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data, be64toh(cmplx_cmd.param));
+    else {
+      std::string mes("Unknown message");
+      print_error(addr, &mes);
+    }
 
   }
 
@@ -146,18 +152,29 @@ void Server::handle_send(Sock tcp_sock, std::string path, unsigned int timeout) 
 
 void Server::remove_file(sockaddr_in addr, char * file) {
   std::string path = std::string(parameters.shrd_fldr) + std::string(file);
-  std::cout << "path: " << path << std::endl;
-  if (std::filesystem::exists(path)) {
-    if (remove(path.c_str()) != 0)
-      syserr("remove file");
-    else {
-      auto it = std::find(files_list.begin(), files_list.end(), std::string(file));
-      files_list.erase(it);
-    }
+  if (std::filesystem::exists(path)) { //check if file exists
+    std::fstream fd(path.c_str(), std::ios::in);
+    if (fd.is_open()) { //first get size of file
+      fd.seekg(0, std::ios::end);
+      int file_size = fd.tellg();
+      parameters.max_space += file_size;
+      fd.close();
+      if (remove(path.c_str()) != 0) //remove file
+        syserr("remove file");
+      else { //remove file from vector
+        auto it = std::find(files_list.begin(), files_list.end(), std::string(file));
+        files_list.erase(it);
+      }
+    } else
+      syserr("file_size");
   } else {
     std::string message("trying to remove non-existent file");
     print_error(addr, &message);
   }
+}
+
+void Server::add_file(uint64_t cmd_seq, sockaddr_in addr, char * file, uint64_t size) {
+
 }
 
 void Server::print_error(sockaddr_in addr, std::string *message) {

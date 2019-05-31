@@ -24,7 +24,8 @@ namespace global {
       {"HELLO", "HELLO"}, {"GOOD_DAY", "GOOD_DAY"},
       {"LIST", "LIST"}, {"MY_LIST", "MY_LIST"},
       {"GET", "GET"}, {"CONNECT_ME", "CONNECT_ME"},
-      {"DEL", "DEL"}};
+      {"DEL", "DEL"}, {"ADD", "ADD"}, {"NO_WAY", "NO_WAY"},
+      {"CAN_ADD", "CAN_ADD"}};
 }
 
 struct server_param {
