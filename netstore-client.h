@@ -14,7 +14,7 @@ class Client {
   struct client_param parameters;
   uint64_t cmd_seq;
   Sock sock;
-  std::set<std::pair<unsigned long long, sockaddr_in>, std::greater<>> group;
+  std::vector<std::pair<unsigned long long, std::string>> group;
   std::vector<std::pair<std::string, std::string>> files;
   sockaddr_in get_max_size();
 

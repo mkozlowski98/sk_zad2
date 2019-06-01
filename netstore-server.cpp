@@ -1,6 +1,55 @@
 #include <thread>
 #include "netstore-server.h"
 
+Server::Sender::Sender(unsigned int _timeout, std::string _path): sock{SOCK_STREAM}, timeout(_timeout), path(std::move(_path)) {}
+
+int Server::Sender::get_msg_sock() {
+  int msgsock = -1;
+  sockaddr_in addr{};
+  socklen_t len;
+  fcntl(sock.sock_no, F_SETFL, O_NONBLOCK);
+
+  auto time = std::chrono::system_clock::now();
+  while (get_diff(time) < timeout && msgsock == -1) { // wait for connection from client
+    len = sizeof(addr);
+    msgsock = accept(sock.sock_no, (sockaddr *)&addr, &len);
+  }
+
+  return msgsock;
+}
+
+uint64_t Server::Sender::get_port() {
+  sock.tcp_socket();
+  return ntohs(sock.local_addr.sin_port);
+}
+
+void Server::Sender::send_file() {
+  if (listen(sock.sock_no, SOMAXCONN) < 0)
+    syserr("listen");
+
+  int msgsock = get_msg_sock();
+  close(sock.sock_no);
+
+  if (msgsock > 0) { //connection established, send file
+    std::fstream fd(path.c_str(), std::ios::in);
+    char *buffer;
+    buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
+    if (!fd.is_open())
+      syserr("fopen");
+    else {
+      while (!fd.eof()) {
+        memset(buffer, 0, 1024);
+        fd.read(buffer, 1024);
+        if (send(msgsock, (void *)buffer, fd.gcount(), 0) < 0)
+          syserr("send in server");
+      }
+      free(buffer);
+      fd.close();
+    }
+    close(msgsock);
+  }
+}
+
 Server::Server(struct server_param _parameters): parameters(_parameters), sock{SOCK_DGRAM} {}
 
 Server::~Server() {
@@ -87,65 +136,38 @@ void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, char *data) {
 
 }
 
-void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, char *data) {
-  auto it = std::find(files_list.begin(), files_list.end(), std::string(data));
+bool Server::file_exist(std::string &file, sockaddr_in addr) {
+  auto it = std::find(files_list.begin(), files_list.end(), file);
   if (it == files_list.end()) {
     std::string message("Trying to download non-existent file");
     print_error(addr, &message);
-    return;
+    return false;
   }
-  Sock send_sock{SOCK_STREAM};
-  send_sock.tcp_socket();
-  uint64_t port = ntohs(send_sock.local_addr.sin_port);
+  return true;
+}
+
+void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, char *data) {
+  std::string file(data);
+  if (!file_exist(file, addr))
+    return;
+
+  std::string path = std::string(parameters.shrd_fldr) + std::string(data);
+  Sender sender{parameters.timeout, path}; //create object for sending file
+
+  uint64_t port = sender.get_port();
   std::string data_str(data);
   if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, data_str)) < 0)
     syserr("send in server");
-  std::string path = std::string(parameters.shrd_fldr) + std::string(data);
-  std::thread thread(handle_send, send_sock, path, parameters.timeout);
+
+  std::thread thread(handle_send, sender);
   if (thread.joinable()) {
     thread.detach();
     threads.emplace_back(std::move(thread));
   }
 }
 
-void Server::handle_send(Sock tcp_sock, std::string path, unsigned int timeout) {
-  sockaddr_in addr{};
-  socklen_t len;
-  int msgsock = 0;
-
-  if (listen(tcp_sock.sock_no, SOMAXCONN) < 0)
-    syserr("listen");
-
-  fcntl(tcp_sock.sock_no, F_SETFL, O_NONBLOCK);
-
-  auto time = std::chrono::system_clock::now();
-  while (get_diff(time) < timeout) { // wait for connection from client
-    len = sizeof(addr);
-    msgsock = accept(tcp_sock.sock_no, (sockaddr *)&addr, &len);
-    if (msgsock >= 0) {
-      break;
-    }
-  }
-  close(tcp_sock.sock_no);
-
-  if (msgsock > 0) { //connection established, send file
-    std::fstream fd(path.c_str(), std::ios::in);
-    char *buffer;
-    buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
-    if (!fd.is_open())
-      syserr("fopen");
-    else {
-      while (!fd.eof()) {
-        memset(buffer, 0, 1024);
-        fd.read(buffer, 1024);
-        if (send(msgsock, (void *)buffer, fd.gcount(), 0) < 0)
-          syserr("send in server");
-      }
-
-      fd.close();
-    }
-    close(msgsock);
-  }
+void Server::handle_send(Sender sender) {
+  sender.send_file();
 }
 
 void Server::remove_file(sockaddr_in addr, char * file) {

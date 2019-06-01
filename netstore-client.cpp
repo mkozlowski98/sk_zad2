@@ -44,13 +44,12 @@ void Client::send_discover(bool show) {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
     if (receive(sock.sock_no, rec_addr, cmplx_cmd) > 0) {
-      group.insert(std::make_pair(be64toh(cmplx_cmd.param), rec_addr));
+      group.emplace_back(std::make_pair(be64toh(cmplx_cmd.param), inet_ntoa(rec_addr.sin_addr)));
       if (show)
         std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " (" << cmplx_cmd.data << ") with free space "\
           << be64toh(cmplx_cmd.param) << std::endl;
     }
   }
-  std::cout << group.begin()->first << std::endl;
 }
 
 void Client::send_search(std::string data) {
@@ -108,6 +107,7 @@ void Client::send_fetch(std::string data) {
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
       close(fetch_sock.sock_no);
       unsigned short port = be64toh(cmplx_cmd.param);
+      std::cout << port << std::endl;
       std::string addr = inet_ntoa(rec_addr.sin_addr);
       std::string path = std::string(parameters.out_fldr) + data;
       std::thread thread(download_file, addr, port, path, data);
@@ -155,13 +155,13 @@ void Client::send_upload(std::string data) {
     path = parameters.out_fldr + data;
   else
     path = data;
-  if (std::filesystem::exists(path)) {
-    send_discover(false);
-    sockaddr_in addr = get_max_size();
-    uint64_t file_len;
-//    std::fstream fd (path, )
-  } else
-    std::cout << "File " << data << "does not exist" << std::endl;
+//  if (std::filesystem::exists(path)) {
+//    send_discover(false);
+////    sockaddr_in addr = get_max_size();
+//    uint64_t file_len;
+////    std::fstream fd (path, )
+//  } else
+//    std::cout << "File " << data << "does not exist" << std::endl;
 }
 
 void Client::send_remove(std::string data) {
@@ -169,14 +169,14 @@ void Client::send_remove(std::string data) {
     syserr("send");
 }
 
-sockaddr_in Client::get_max_size() {
-  sockaddr_in addr{};
-  unsigned long long size = 0;
-  for (auto it: group)
-    if (it.first > size)
-      addr = it.second;
-  return addr;
-}
+//sockaddr_in Client::get_max_size() {
+//  sockaddr_in addr{};
+//  unsigned long long size = 0;
+//  for (auto it: group)
+//    if (it.first > size)
+//      addr = it.second;
+//  return addr;
+//}
 
 int main(int argc, char *argv[]) {
   struct client_param parameters {};
