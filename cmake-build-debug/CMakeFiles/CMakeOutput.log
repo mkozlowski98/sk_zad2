@@ -34,6 +34,7 @@ Run Build Command(s):/usr/bin/make cmTC_2df0d/fast
 make[1]: Entering directory '/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/CMakeTmp'
 Building CXX object CMakeFiles/cmTC_2df0d.dir/CMakeCXXCompilerABI.cpp.o
 /usr/bin/g++-8    -v -o CMakeFiles/cmTC_2df0d.dir/CMakeCXXCompilerABI.cpp.o -c /snap/clion/70/bin/cmake/linux/share/cmake-3.14/Modules/CMakeCXXCompilerABI.cpp
+
 Using built-in specs.
 COLLECT_GCC=/usr/bin/g++-8
 OFFLOAD_TARGET_NAMES=nvptx-none

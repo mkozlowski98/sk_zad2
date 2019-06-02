@@ -60,6 +60,7 @@ CMAKE_BINARY_DIR = /home/koksu/studies/4_sem/sik/zad2/cmake-build-debug
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
 	/snap/clion/73/bin/cmake/linux/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -71,6 +72,7 @@ rebuild_cache/fast: rebuild_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
 	/snap/clion/73/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -273,6 +275,7 @@ help:
 	@echo "... messages.o"
 	@echo "... messages.i"
 	@echo "... messages.s"
+
 	@echo "... netstore-client.o"
 	@echo "... netstore-client.i"
 	@echo "... netstore-client.s"
