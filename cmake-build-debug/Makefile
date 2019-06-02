@@ -39,10 +39,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /snap/clion/70/bin/cmake/linux/bin/cmake
+CMAKE_COMMAND = /snap/clion/73/bin/cmake/linux/bin/cmake
 
 # The command to remove a file.
-RM = /snap/clion/70/bin/cmake/linux/bin/cmake -E remove -f
+RM = /snap/clion/73/bin/cmake/linux/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -59,7 +59,8 @@ CMAKE_BINARY_DIR = /home/koksu/studies/4_sem/sik/zad2/cmake-build-debug
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/snap/clion/70/bin/cmake/linux/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/snap/clion/73/bin/cmake/linux/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -70,7 +71,8 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/snap/clion/70/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	/snap/clion/73/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -123,59 +125,140 @@ zad2/fast:
 	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/build
 .PHONY : zad2/fast
 
-netstore-client.o: netstore-client.c.o
+globals.o: globals.cpp.o
+
+.PHONY : globals.o
+
+# target to build an object file
+globals.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/globals.cpp.o
+.PHONY : globals.cpp.o
+
+globals.i: globals.cpp.i
+
+.PHONY : globals.i
+
+# target to preprocess a source file
+globals.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/globals.cpp.i
+.PHONY : globals.cpp.i
+
+globals.s: globals.cpp.s
+
+.PHONY : globals.s
+
+# target to generate assembly for a file
+globals.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/globals.cpp.s
+.PHONY : globals.cpp.s
+
+messages.o: messages.cpp.o
+
+.PHONY : messages.o
+
+# target to build an object file
+messages.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/messages.cpp.o
+.PHONY : messages.cpp.o
+
+messages.i: messages.cpp.i
+
+.PHONY : messages.i
+
+# target to preprocess a source file
+messages.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/messages.cpp.i
+.PHONY : messages.cpp.i
+
+messages.s: messages.cpp.s
+
+.PHONY : messages.s
+
+# target to generate assembly for a file
+messages.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/messages.cpp.s
+.PHONY : messages.cpp.s
+
+netstore-client.o: netstore-client.cpp.o
 
 .PHONY : netstore-client.o
 
 # target to build an object file
-netstore-client.c.o:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.c.o
-.PHONY : netstore-client.c.o
+netstore-client.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.cpp.o
+.PHONY : netstore-client.cpp.o
 
-netstore-client.i: netstore-client.c.i
+netstore-client.i: netstore-client.cpp.i
 
 .PHONY : netstore-client.i
 
 # target to preprocess a source file
-netstore-client.c.i:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.c.i
-.PHONY : netstore-client.c.i
+netstore-client.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.cpp.i
+.PHONY : netstore-client.cpp.i
 
-netstore-client.s: netstore-client.c.s
+netstore-client.s: netstore-client.cpp.s
 
 .PHONY : netstore-client.s
 
 # target to generate assembly for a file
-netstore-client.c.s:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.c.s
-.PHONY : netstore-client.c.s
+netstore-client.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-client.cpp.s
+.PHONY : netstore-client.cpp.s
 
-netstore-server.o: netstore-server.c.o
+netstore-server.o: netstore-server.cpp.o
 
 .PHONY : netstore-server.o
 
 # target to build an object file
-netstore-server.c.o:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.c.o
-.PHONY : netstore-server.c.o
+netstore-server.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.cpp.o
+.PHONY : netstore-server.cpp.o
 
-netstore-server.i: netstore-server.c.i
+netstore-server.i: netstore-server.cpp.i
 
 .PHONY : netstore-server.i
 
 # target to preprocess a source file
-netstore-server.c.i:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.c.i
-.PHONY : netstore-server.c.i
+netstore-server.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.cpp.i
+.PHONY : netstore-server.cpp.i
 
-netstore-server.s: netstore-server.c.s
+netstore-server.s: netstore-server.cpp.s
 
 .PHONY : netstore-server.s
 
 # target to generate assembly for a file
-netstore-server.c.s:
-	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.c.s
-.PHONY : netstore-server.c.s
+netstore-server.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/netstore-server.cpp.s
+.PHONY : netstore-server.cpp.s
+
+sock.o: sock.cpp.o
+
+.PHONY : sock.o
+
+# target to build an object file
+sock.cpp.o:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/sock.cpp.o
+.PHONY : sock.cpp.o
+
+sock.i: sock.cpp.i
+
+.PHONY : sock.i
+
+# target to preprocess a source file
+sock.cpp.i:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/sock.cpp.i
+.PHONY : sock.cpp.i
+
+sock.s: sock.cpp.s
+
+.PHONY : sock.s
+
+# target to generate assembly for a file
+sock.cpp.s:
+	$(MAKE) -f CMakeFiles/zad2.dir/build.make CMakeFiles/zad2.dir/sock.cpp.s
+.PHONY : sock.cpp.s
 
 # Help Target
 help:
@@ -186,12 +269,22 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... zad2"
 	@echo "... edit_cache"
+	@echo "... globals.o"
+	@echo "... globals.i"
+	@echo "... globals.s"
+	@echo "... messages.o"
+	@echo "... messages.i"
+	@echo "... messages.s"
+
 	@echo "... netstore-client.o"
 	@echo "... netstore-client.i"
 	@echo "... netstore-client.s"
 	@echo "... netstore-server.o"
 	@echo "... netstore-server.i"
 	@echo "... netstore-server.s"
+	@echo "... sock.o"
+	@echo "... sock.i"
+	@echo "... sock.s"
 .PHONY : help
 
 

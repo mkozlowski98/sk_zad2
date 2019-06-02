@@ -34,10 +34,11 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /snap/clion/70/bin/cmake/linux/bin/cmake
+CMAKE_COMMAND = /snap/clion/73/bin/cmake/linux/bin/cmake
 
 # The command to remove a file.
-RM = /snap/clion/70/bin/cmake/linux/bin/cmake -E remove -f
+RM = /snap/clion/73/bin/cmake/linux/bin/cmake -E remove -f
+
 
 # Escaping for special characters.
 EQUALS = =
@@ -57,6 +58,71 @@ include CMakeFiles/zad2.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/zad2.dir/flags.make
 
+CMakeFiles/zad2.dir/netstore-server.cpp.o: CMakeFiles/zad2.dir/flags.make
+CMakeFiles/zad2.dir/netstore-server.cpp.o: ../netstore-server.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/zad2.dir/netstore-server.cpp.o"
+	/usr/bin/g++-8  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/zad2.dir/netstore-server.cpp.o -c /home/koksu/studies/4_sem/sik/zad2/netstore-server.cpp
+
+CMakeFiles/zad2.dir/netstore-server.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/zad2.dir/netstore-server.cpp.i"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/koksu/studies/4_sem/sik/zad2/netstore-server.cpp > CMakeFiles/zad2.dir/netstore-server.cpp.i
+
+CMakeFiles/zad2.dir/netstore-server.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/zad2.dir/netstore-server.cpp.s"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/koksu/studies/4_sem/sik/zad2/netstore-server.cpp -o CMakeFiles/zad2.dir/netstore-server.cpp.s
+
+CMakeFiles/zad2.dir/sock.cpp.o: CMakeFiles/zad2.dir/flags.make
+CMakeFiles/zad2.dir/sock.cpp.o: ../sock.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/zad2.dir/sock.cpp.o"
+	/usr/bin/g++-8  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/zad2.dir/sock.cpp.o -c /home/koksu/studies/4_sem/sik/zad2/sock.cpp
+
+CMakeFiles/zad2.dir/sock.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/zad2.dir/sock.cpp.i"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/koksu/studies/4_sem/sik/zad2/sock.cpp > CMakeFiles/zad2.dir/sock.cpp.i
+
+CMakeFiles/zad2.dir/sock.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/zad2.dir/sock.cpp.s"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/koksu/studies/4_sem/sik/zad2/sock.cpp -o CMakeFiles/zad2.dir/sock.cpp.s
+
+CMakeFiles/zad2.dir/netstore-client.cpp.o: CMakeFiles/zad2.dir/flags.make
+CMakeFiles/zad2.dir/netstore-client.cpp.o: ../netstore-client.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/zad2.dir/netstore-client.cpp.o"
+	/usr/bin/g++-8  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/zad2.dir/netstore-client.cpp.o -c /home/koksu/studies/4_sem/sik/zad2/netstore-client.cpp
+
+CMakeFiles/zad2.dir/netstore-client.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/zad2.dir/netstore-client.cpp.i"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/koksu/studies/4_sem/sik/zad2/netstore-client.cpp > CMakeFiles/zad2.dir/netstore-client.cpp.i
+
+CMakeFiles/zad2.dir/netstore-client.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/zad2.dir/netstore-client.cpp.s"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/koksu/studies/4_sem/sik/zad2/netstore-client.cpp -o CMakeFiles/zad2.dir/netstore-client.cpp.s
+
+CMakeFiles/zad2.dir/messages.cpp.o: CMakeFiles/zad2.dir/flags.make
+CMakeFiles/zad2.dir/messages.cpp.o: ../messages.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/zad2.dir/messages.cpp.o"
+	/usr/bin/g++-8  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/zad2.dir/messages.cpp.o -c /home/koksu/studies/4_sem/sik/zad2/messages.cpp
+
+CMakeFiles/zad2.dir/messages.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/zad2.dir/messages.cpp.i"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/koksu/studies/4_sem/sik/zad2/messages.cpp > CMakeFiles/zad2.dir/messages.cpp.i
+
+CMakeFiles/zad2.dir/messages.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/zad2.dir/messages.cpp.s"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/koksu/studies/4_sem/sik/zad2/messages.cpp -o CMakeFiles/zad2.dir/messages.cpp.s
+
+CMakeFiles/zad2.dir/globals.cpp.o: CMakeFiles/zad2.dir/flags.make
+CMakeFiles/zad2.dir/globals.cpp.o: ../globals.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/zad2.dir/globals.cpp.o"
+	/usr/bin/g++-8  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/zad2.dir/globals.cpp.o -c /home/koksu/studies/4_sem/sik/zad2/globals.cpp
+
+CMakeFiles/zad2.dir/globals.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/zad2.dir/globals.cpp.i"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/koksu/studies/4_sem/sik/zad2/globals.cpp > CMakeFiles/zad2.dir/globals.cpp.i
+
+CMakeFiles/zad2.dir/globals.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/zad2.dir/globals.cpp.s"
+	/usr/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/koksu/studies/4_sem/sik/zad2/globals.cpp -o CMakeFiles/zad2.dir/globals.cpp.s
+=======
 CMakeFiles/zad2.dir/netstore-server.c.o: CMakeFiles/zad2.dir/flags.make
 CMakeFiles/zad2.dir/netstore-server.c.o: ../netstore-server.c
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/zad2.dir/netstore-server.c.o"
@@ -85,17 +151,24 @@ CMakeFiles/zad2.dir/netstore-client.c.s: cmake_force
 
 # Object files for target zad2
 zad2_OBJECTS = \
-"CMakeFiles/zad2.dir/netstore-server.c.o" \
-"CMakeFiles/zad2.dir/netstore-client.c.o"
+"CMakeFiles/zad2.dir/netstore-server.cpp.o" \
+"CMakeFiles/zad2.dir/sock.cpp.o" \
+"CMakeFiles/zad2.dir/netstore-client.cpp.o" \
+"CMakeFiles/zad2.dir/messages.cpp.o" \
+"CMakeFiles/zad2.dir/globals.cpp.o"
 
 # External object files for target zad2
 zad2_EXTERNAL_OBJECTS =
 
-zad2: CMakeFiles/zad2.dir/netstore-server.c.o
-zad2: CMakeFiles/zad2.dir/netstore-client.c.o
+zad2: CMakeFiles/zad2.dir/netstore-server.cpp.o
+zad2: CMakeFiles/zad2.dir/sock.cpp.o
+zad2: CMakeFiles/zad2.dir/netstore-client.cpp.o
+zad2: CMakeFiles/zad2.dir/messages.cpp.o
+zad2: CMakeFiles/zad2.dir/globals.cpp.o
 zad2: CMakeFiles/zad2.dir/build.make
 zad2: CMakeFiles/zad2.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable zad2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable zad2"
+
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/zad2.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

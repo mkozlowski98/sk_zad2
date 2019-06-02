@@ -34,9 +34,12 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/include/c++/8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/8"/>
+					<Add directory="/usr/include/c++/8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
 				</Compiler>
@@ -54,9 +57,12 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/include/c++/8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/8"/>
+					<Add directory="/usr/include/c++/8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
 				</Compiler>
@@ -78,10 +84,34 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-client.c">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/globals.cpp">
 			<Option target="zad2"/>
 		</Unit>
-		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-server.c">
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/globals.h">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/messages.cpp">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/messages.h">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-client.cpp">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-client.h">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-server.cpp">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/netstore-server.h">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/sock.cpp">
+			<Option target="zad2"/>
+		</Unit>
+		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/sock.h">
 			<Option target="zad2"/>
 		</Unit>
 		<Unit filename="/home/koksu/studies/4_sem/sik/zad2/CMakeLists.txt">
