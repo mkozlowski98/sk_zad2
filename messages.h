@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include <cstring>
-#define SIMPL_DATA_SIZE 65489
-#define CMPLX_DATA_SIZE 65481
+#define SIMPL_DATA_SIZE 64489
+#define CMPLX_DATA_SIZE 64481
 
 /* defined class for sending via udp */
 class __attribute__((__packed__)) Simpl_cmd {

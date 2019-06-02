@@ -161,7 +161,7 @@ void Client::send_fetch(std::string data) {
       syserr("send");
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
       close(fetch_sock.sock_no);
-      unsigned int port = be64toh(cmplx_cmd.param);
+      unsigned short port = be64toh(cmplx_cmd.param);
       std::string path = std::string(parameters.out_fldr) + data;
       std::thread thread(&Client::download_file, this, addr, port, path, data);
       if (thread.joinable()) {
@@ -176,14 +176,13 @@ void Client::send_fetch(std::string data) {
   }
 }
 
-void Client::download_file(sockaddr_in addr, unsigned int port, std::string path, std::string file) {
+void Client::download_file(sockaddr_in addr, unsigned short port, std::string path, std::string file) {
   Sock tcp_sock{SOCK_STREAM};
   tcp_sock.copy_address(addr, port);
   std::string addr_str = inet_ntoa(addr.sin_addr);
   if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0) {
     std::unique_lock lock(display_mutex);
     std::cout << "File " << file << " downloading failed (" << addr_str << ":" << port << ") error in connect" << std::endl;
-    syserr("connect");
   } else {
     std::fstream fd(path.c_str(), std::ios::out);
     /* open file */
@@ -196,7 +195,6 @@ void Client::download_file(sockaddr_in addr, unsigned int port, std::string path
         if ((len = recv(tcp_sock.sock_no, (void *)buffer, BUFF_SIZE - 1, 0)) < 0) {
           std::unique_lock lock(display_mutex);
           std::cout << "File " << file << " downloading failed (" << addr_str << ":" << port << ") error in read" << std::endl;
-          syserr("read");
         }
         if (len > 0) {
           fd.write(buffer, len);
@@ -229,27 +227,10 @@ void Client::send_upload(std::string data) {
       std::cout << "File " << data << " too big" << std::endl;
       return;
     }
-    Sock upload_sock{SOCK_DGRAM};
-    sockaddr_in rec_addr{};
-    Cmplx_cmd cmplx_cmd{};
-    upload_sock.copy_address(group.begin()->addr, ntohs(group.begin()->addr.sin_port));
-    timeval timeout{};
-    timeout.tv_sec = parameters.timeout / 1000;
-    upload_sock.set_timeout(timeout);
-    if (send(upload_sock.sock_no, upload_sock.local_addr, Cmplx_cmd(global::cmd_message["ADD"], cmd_seq, size, data)) < 0)
-      syserr("send");
-    if (receive(upload_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
-      if (cmplx_cmd.cmd == global::cmd_message["CAN_ADD"]) {
-        close(upload_sock.sock_no);
-        unsigned port = be64toh(cmplx_cmd.param);
-        std::thread thread(&Client::upload_file, this, group.begin()->addr, port, path, data);
-        if (thread.joinable()) {
-          thread.detach();
-          threads.emplace_back(std::move(thread));
-        }
-      } else {
-        std::cout << "NO_WAY" << std::endl;
-      }
+    std::thread thread(&Client::choose_server, this, data, path, size);
+    if (thread.joinable()) {
+      thread.detach();
+      threads.emplace_back(std::move(thread));
     }
   } else {
     std::unique_lock lock(display_mutex);
@@ -257,7 +238,40 @@ void Client::send_upload(std::string data) {
   }
 }
 
-void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path, std::string file) {
+void Client::choose_server(std::string data, std::string path, uint64_t size) {
+  Sock upload_sock{SOCK_DGRAM};
+  sockaddr_in rec_addr{};
+  Cmplx_cmd cmplx_cmd{};
+  upload_sock.copy_address(group.begin()->addr, ntohs(group.begin()->addr.sin_port));
+  timeval timeout{};
+  timeout.tv_sec = parameters.timeout / 1000;
+  upload_sock.set_timeout(timeout);
+  std::string addr_str;
+  for (auto &server: group) {
+    addr_str = inet_ntoa(server.addr.sin_addr);
+    if (server.size < size) {
+      break;
+    } else {
+      if (send(upload_sock.sock_no, upload_sock.local_addr, Cmplx_cmd(global::cmd_message["ADD"], cmd_seq, size, data)) < 0) {
+        std::unique_lock lock(display_mutex);
+        std::cout << "File " << data << " uploading failed (" << addr_str << ") error in send" << std::endl;
+      }
+      if (receive(upload_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
+        if (cmplx_cmd.cmd == global::cmd_message["CAN_ADD"]) {
+          unsigned short port = be64toh(cmplx_cmd.param);
+          if (upload_file(rec_addr, port, path, data)) {
+            std::unique_lock lock(display_mutex);
+            std::cout << "File " << data << " uploaded (" << addr_str << ":" << port << ")" << std::endl;
+            break;
+          }
+        }
+      }
+    }
+  }
+  close(upload_sock.sock_no);
+}
+
+bool Client::upload_file(sockaddr_in addr, unsigned short port, std::string path, std::string file) {
   Sock tcp_sock{SOCK_STREAM};
   tcp_sock.copy_address(addr, port);
   std::string addr_str = inet_ntoa(addr.sin_addr);
@@ -265,7 +279,7 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
   if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0) {
     std::unique_lock lock(display_mutex);
     std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") error in connect" << std::endl;
-    syserr("connect");
+    return false;
   } else {
     /* open file */
     std::fstream fd(path.c_str(), std::ios::in);
@@ -273,9 +287,8 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
     buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
     if (!fd.is_open()) {
       std::unique_lock lock(display_mutex);
-      std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") couldn't open a file"
-                << std::endl;
-      syserr("fopen");
+      std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") couldn't open file" << std::endl;
+      return false;
     }
     else {
       /* send whole file to server */
@@ -284,9 +297,8 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
         fd.read(buffer, 1024);
         if (send(tcp_sock.sock_no, (void *) buffer, fd.gcount(), 0) < 0) {
           std::unique_lock lock(display_mutex);
-          std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") error in sendto"
-                    << std::endl;
-          syserr("send in client");
+          std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") error in connect to server" << std::endl;
+          return false;
         }
       }
       free(buffer);
@@ -294,6 +306,7 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
     }
   }
   close(tcp_sock.sock_no);
+  return true;
 }
 
 void Client::send_remove(std::string data) {
@@ -302,9 +315,14 @@ void Client::send_remove(std::string data) {
 }
 
 void Client::exit() {
+  group.clear();
+  files.clear();
+  files.shrink_to_fit();
   for (auto &thread: threads)
     if (thread.joinable())
       thread.join();
+  threads.clear();
+  threads.shrink_to_fit();
   close(sock.sock_no);
 }
 

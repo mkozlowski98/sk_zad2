@@ -1,6 +1,6 @@
 #include "netstore-server.h"
 
-Server::Sender::Sender(Server& _parent, std::string _path): sock{SOCK_STREAM}, parent(_parent), path(std::move(_path)) {}
+Server::Sender::Sender(Server& _parent, std::string _path, std::string _file): sock{SOCK_STREAM}, parent(_parent), path(std::move(_path)), file(std::move(_file)) {}
 
 int Server::Sender::get_msg_sock() {
   int msgsock = -1;
@@ -73,8 +73,9 @@ void Server::Sender::upload_file() {
       free(buffer);
       fd.close();
     }
+    close(msgsock);
+    parent.files_list.emplace_back(file);
   }
-  close(msgsock);
 }
 
 Server::Server(struct server_param _parameters): parameters(_parameters), sock{SOCK_DGRAM} {}
@@ -105,7 +106,6 @@ void Server::start_listening() {
     memset(&cmplx_cmd, 0, sizeof(cmplx_cmd));
     receive(sock.sock_no, addr, cmplx_cmd);
     message = cmplx_cmd.cmd;
-    std::cout << cmplx_cmd.cmd << " port: " << ntohs(addr.sin_port)<< " addr: " << inet_ntoa(addr.sin_addr) << "\n";
     if (message == global::cmd_message["HELLO"])
       hello(be64toh(cmplx_cmd.cmd_seq), addr);
     else if (message == global::cmd_message["LIST"])
@@ -187,7 +187,7 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, char *data) {
     return;
 
   std::string path = std::string(parameters.shrd_fldr) + std::string(data);
-  Sender sender{*this, path}; //create object for sending file
+  Sender sender{*this, path, file}; //create object for sending file
 
   uint64_t port = sender.get_port();
   std::string data_str(data);
@@ -247,7 +247,7 @@ void Server::add_file(uint64_t cmd_seq, sockaddr_in addr, char * file, uint64_t 
       syserr("send in server");
   } else {
     std::string path = std::string(parameters.shrd_fldr) + file_str;
-    Sender sender{*this, path};
+    Sender sender{*this, path, file_str};
 
     uint64_t port = sender.get_port();
     /* send positive answer to client */

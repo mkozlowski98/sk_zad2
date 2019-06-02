@@ -20,7 +20,6 @@
 
 #define TIMEOUT 5000
 #define MAX_SPACE 52428800
-#define UDP_SIZE 65507
 #define BUFF_SIZE 1024
 
 namespace global {

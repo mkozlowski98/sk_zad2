@@ -16,12 +16,13 @@ class Server {
     Sock sock;
     Server& parent;
     std::string path;
+    std::string file;
 
     /* return socket if client connected to it */
     int get_msg_sock();
 
    public:
-    Sender(Server&, std::string);
+    Sender(Server&, std::string, std::string);
     ~Sender() = default;
 
     /* attach socket to port and return number */
