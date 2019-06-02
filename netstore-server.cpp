@@ -1,7 +1,6 @@
-#include <thread>
 #include "netstore-server.h"
 
-Server::Sender::Sender(unsigned int _timeout, std::string _path): sock{SOCK_STREAM}, timeout(_timeout), path(std::move(_path)) {}
+Server::Sender::Sender(Server& _parent, std::string _path): sock{SOCK_STREAM}, parent(_parent), path(std::move(_path)) {}
 
 int Server::Sender::get_msg_sock() {
   int msgsock = -1;
@@ -10,7 +9,7 @@ int Server::Sender::get_msg_sock() {
   fcntl(sock.sock_no, F_SETFL, O_NONBLOCK);
 
   auto time = std::chrono::system_clock::now();
-  while (get_diff(time) < timeout && msgsock == -1) { // wait for connection from client
+  while (get_diff(time) < parent.parameters.timeout && msgsock == -1) { // wait for connection from client
     len = sizeof(addr);
     msgsock = accept(sock.sock_no, (sockaddr *)&addr, &len);
   }
@@ -52,10 +51,16 @@ void Server::Sender::send_file() {
 
 Server::Server(struct server_param _parameters): parameters(_parameters), sock{SOCK_DGRAM} {}
 
-Server::~Server() {
+void Server::clear() {
   files_list.clear();
   files_list.shrink_to_fit();
   close(sock.sock_no);
+  for (auto &thread: threads) {
+    if (thread.joinable())
+      thread.join();
+  }
+  threads.clear();
+  threads.shrink_to_fit();
 }
 
 void Server::start_listening() {
@@ -67,7 +72,7 @@ void Server::start_listening() {
 
   struct sockaddr_in addr {};
 
-  for (;;) {
+  while (global::flag) {
     memset(&addr, 0, sizeof addr);
     memset(&cmplx_cmd, 0, sizeof(cmplx_cmd));
     receive(sock.sock_no, addr, cmplx_cmd);
@@ -104,7 +109,7 @@ void Server::list_files() {
 
   for (auto& entry: fs::directory_iterator(path)) {
     if (fs::is_regular_file(entry)) {
-      files_list.push_back(entry.path().filename().string());
+      files_list.emplace_back(entry.path().filename().string());
     }
   }
 }
@@ -152,14 +157,14 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, char *data) {
     return;
 
   std::string path = std::string(parameters.shrd_fldr) + std::string(data);
-  Sender sender{parameters.timeout, path}; //create object for sending file
+  Sender sender{*this, path}; //create object for sending file
 
   uint64_t port = sender.get_port();
   std::string data_str(data);
   if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, data_str)) < 0)
     syserr("send in server");
 
-  std::thread thread(handle_send, sender);
+  std::thread thread(&Server::handle_send, this, sender);
   if (thread.joinable()) {
     thread.detach();
     threads.emplace_back(std::move(thread));
@@ -167,6 +172,7 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, char *data) {
 }
 
 void Server::handle_send(Sender sender) {
+  std::unique_lock lock(this->file_mutex);
   sender.send_file();
 }
 
@@ -214,15 +220,17 @@ int main(int argc, char *argv[]) {
     fatal("arguments");
   }
 
+
   Server server (parameters);
-//  sigaction sig_handler {};
-//  sig_handler.sa_handler = Server::signal_handler;
-//  sigemptyset(&sig_handler.sa_mask);
-//  sig_handler.sa_flags = 0;
-//
-//  sigaction(SIGINT, &sig_handler, nullptr);
+  struct sigaction sig_handler{};
+  sig_handler.sa_handler = signal_handler;
+  sigemptyset(&sig_handler.sa_mask);
+  sig_handler.sa_flags = 0;
+
+  sigaction(SIGINT, &sig_handler, nullptr);
 
   server.start_listening();
+  server.clear();
 
   exit(EXIT_SUCCESS);
 }

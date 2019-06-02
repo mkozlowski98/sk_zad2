@@ -9,26 +9,28 @@
 
 class Server {
  private:
-  struct server_param parameters;
-  Sock sock;
-  std::vector<std::string> files_list;
-  std::vector<std::thread> threads;
 
   class Sender {
    private:
     Sock sock;
-    unsigned int timeout;
+    Server& parent;
     std::string path;
 
     int get_msg_sock();
 
    public:
-    Sender(unsigned int, std::string);
+    Sender(Server&, std::string);
     ~Sender() = default;
 
     uint64_t get_port();
     void send_file();
   };
+
+  struct server_param parameters;
+  Sock sock;
+  std::vector<std::string> files_list;
+  std::vector<std::thread> threads;
+  std::shared_mutex file_mutex;
 
   void connect();
   void list_files();
@@ -36,14 +38,15 @@ class Server {
   void filtered_files(uint64_t, sockaddr_in, char *);
   bool file_exist(std::string&, sockaddr_in);
   void send_file(uint64_t, sockaddr_in, char *);
-  static void handle_send (Sender);
+  void handle_send (Sender);
   void remove_file(sockaddr_in, char *);
   void add_file(uint64_t, sockaddr_in, char *, uint64_t);
   static void print_error(sockaddr_in, std::string*);
 
  public:
-  Server(struct server_param);
-  ~Server();
+  explicit Server(struct server_param);
+  ~Server() = default;
+  void clear();
 
   void start_listening();
 };

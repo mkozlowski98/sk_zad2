@@ -10,6 +10,8 @@
 #include <fstream>
 #include <unistd.h>
 #include <filesystem>
+#include <mutex>
+#include <shared_mutex>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
@@ -28,6 +30,7 @@ namespace global {
       {"GET", "GET"}, {"CONNECT_ME", "CONNECT_ME"},
       {"DEL", "DEL"}, {"ADD", "ADD"}, {"NO_WAY", "NO_WAY"},
       {"CAN_ADD", "CAN_ADD"}};
+  extern bool flag;
 }
 
 struct server_param {
@@ -68,4 +71,6 @@ unsigned int get_diff(std::chrono::time_point<clock> time) {
   auto millisecs = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time).count();
   return millisecs;
 }
+
+void signal_handler(int);
 #endif //ZAD2_GLOBALS_H

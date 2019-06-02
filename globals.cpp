@@ -1,5 +1,7 @@
 #include "globals.h"
 
+bool global::flag = true;
+
 bool server_parse(int argc, char **argv, struct server_param *parameters) {
   int opt, g = 0, p = 0, f = 0;
   int timeout;
@@ -75,4 +77,8 @@ bool client_parse(int argc, char *argv[], struct client_param *parameters) {
   if (g * p * o == 0)
     return false;
   return true;
+}
+
+void signal_handler(int i) {
+  global::flag = false;
 }
