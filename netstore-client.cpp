@@ -41,6 +41,17 @@ void Client::listen() {
   }
 }
 
+uint64_t Client::get_size(std::string path) {
+  std::fstream fd(path.c_str(), std::ios::in);
+  uint64_t size = 0;
+  if (fd.is_open()) {
+    fd.seekg(0, std::ios::end);
+    size = fd.tellg();
+    fd.close();
+  }
+  return size;
+}
+
 std::vector<std::string> Client::get_command() {
   std::vector<std::string> line;
   std::string command;
@@ -78,6 +89,7 @@ void Client::send_discover(bool show) {
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
+  /* receive messages from servers until timeout */
   while (get_diff(time) < parameters.timeout) {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
@@ -103,6 +115,7 @@ void Client::send_search(std::string data) {
     syserr("send");
 
   auto time = std::chrono::system_clock::now();
+  /* receive messages from servers until timeout */
   while (get_diff(time) < parameters.timeout) {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
@@ -148,7 +161,7 @@ void Client::send_fetch(std::string data) {
       syserr("send");
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
       close(fetch_sock.sock_no);
-      unsigned port = be64toh(cmplx_cmd.param);
+      unsigned int port = be64toh(cmplx_cmd.param);
       std::string path = std::string(parameters.out_fldr) + data;
       std::thread thread(&Client::download_file, this, addr, port, path, data);
       if (thread.joinable()) {
@@ -163,7 +176,7 @@ void Client::send_fetch(std::string data) {
   }
 }
 
-void Client::download_file(sockaddr_in addr, unsigned short port, std::string path, std::string file) {
+void Client::download_file(sockaddr_in addr, unsigned int port, std::string path, std::string file) {
   Sock tcp_sock{SOCK_STREAM};
   tcp_sock.copy_address(addr, port);
   std::string addr_str = inet_ntoa(addr.sin_addr);
@@ -173,10 +186,12 @@ void Client::download_file(sockaddr_in addr, unsigned short port, std::string pa
     syserr("connect");
   } else {
     std::fstream fd(path.c_str(), std::ios::out);
+    /* open file */
     if (fd.is_open()) {
       char *buffer;
       buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
       ssize_t len;
+      /* receive whole file from server */
       do {
         if ((len = recv(tcp_sock.sock_no, (void *)buffer, BUFF_SIZE - 1, 0)) < 0) {
           std::unique_lock lock(display_mutex);
@@ -246,11 +261,13 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
   Sock tcp_sock{SOCK_STREAM};
   tcp_sock.copy_address(addr, port);
   std::string addr_str = inet_ntoa(addr.sin_addr);
+  /* connect to tcp socket opened by server */
   if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0) {
     std::unique_lock lock(display_mutex);
     std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") error in connect" << std::endl;
     syserr("connect");
   } else {
+    /* open file */
     std::fstream fd(path.c_str(), std::ios::in);
     char *buffer;
     buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
@@ -261,6 +278,7 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
       syserr("fopen");
     }
     else {
+      /* send whole file to server */
       while (!fd.eof()) {
         memset(buffer, 0, 1024);
         fd.read(buffer, 1024);
@@ -283,17 +301,6 @@ void Client::send_remove(std::string data) {
     syserr("send");
 }
 
-uint64_t Client::get_size(std::string path) {
-  std::fstream fd(path.c_str(), std::ios::in);
-  uint64_t size = 0;
-  if (fd.is_open()) {
-    fd.seekg(0, std::ios::end);
-    size = fd.tellg();
-    fd.close();
-  }
-  return size;
-}
-
 void Client::exit() {
   for (auto &thread: threads)
     if (thread.joinable())
@@ -311,7 +318,9 @@ int main(int argc, char *argv[]) {
     fatal("arguments");
   }
 
-  Client client(parameters, 2);
+  uint64_t cmd_seq = rand() % UINTMAX_MAX + 1;
+
+  Client client(parameters, cmd_seq);
   client.listen();
 
   exit(EXIT_SUCCESS);

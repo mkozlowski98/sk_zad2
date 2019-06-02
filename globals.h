@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <mutex>
 #include <shared_mutex>
+#include <stdlib.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
@@ -33,6 +34,7 @@ namespace global {
   extern bool flag;
 }
 
+/* struct for parameters for server */
 struct server_param {
   char *mcast_addr;
   short cmd_port;
@@ -41,6 +43,7 @@ struct server_param {
   unsigned int timeout;
 };
 
+/* struct for parameters for client*/
 struct client_param {
   char *mcast_addr;
   short cmd_port;
@@ -48,9 +51,12 @@ struct client_param {
   unsigned int timeout;
 };
 
+/* function to parse program argumnets for server and client */
 bool server_parse(int, char **, struct server_param *);
 bool client_parse(int, char **, struct client_param *);
 
+
+/* receive datagram and save it on T object */
 template <typename T>
 ssize_t receive(int sock, struct sockaddr_in &addr, T& cmd) {
   socklen_t rcva_len;
@@ -58,6 +64,7 @@ ssize_t receive(int sock, struct sockaddr_in &addr, T& cmd) {
   return recvfrom(sock, (char *)&cmd, sizeof cmd, 0, (struct sockaddr *)&addr, &rcva_len);
 }
 
+/* send datagram with T object to address addr */
 template <typename T>
 ssize_t send(int sock, struct sockaddr_in addr, T cmd) {
   socklen_t rcva_len;
@@ -65,6 +72,7 @@ ssize_t send(int sock, struct sockaddr_in addr, T cmd) {
   return sendto(sock, (char *)&cmd, sizeof cmd, 0, (struct sockaddr *)&addr, rcva_len);
 }
 
+/* return how many milliseconds passed since time */
 template <typename clock>
 unsigned int get_diff(std::chrono::time_point<clock> time) {
   auto time_now = std::chrono::system_clock::now();
@@ -72,5 +80,6 @@ unsigned int get_diff(std::chrono::time_point<clock> time) {
   return millisecs;
 }
 
+/* SIGINT handler for server */
 void signal_handler(int);
 #endif //ZAD2_GLOBALS_H

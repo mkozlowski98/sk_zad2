@@ -109,7 +109,7 @@ void Server::start_listening() {
     if (message == global::cmd_message["HELLO"])
       hello(be64toh(cmplx_cmd.cmd_seq), addr);
     else if (message == global::cmd_message["LIST"])
-      filtered_files(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
+      send_list(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
     else if (message == global::cmd_message["GET"])
       send_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
     else if (message == global::cmd_message["DEL"])
@@ -150,13 +150,13 @@ void Server::hello(uint64_t cmd_seq, sockaddr_in addr) {
     syserr("send in server");
 }
 
-void Server::filtered_files(uint64_t cmd_seq, sockaddr_in addr, char *data) {
+void Server::send_list(uint64_t cmd_seq, sockaddr_in addr, char *data) {
   if (!files_list.empty()) {
     std::string reg(data);
     std::string str_to_send{};
     for (auto &it: files_list) {
-      if (it.find(reg) != std::string::npos) {
-        if (str_to_send.length() + it.length() > UDP_SIZE) {
+      if (it.find(reg) != std::string::npos) { // check if filename contains reg substring
+        if (str_to_send.length() + it.length() > CMPLX_DATA_SIZE) { // send datagram to client if struct is full
           if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send)) < 0)
             syserr("send in server");
           str_to_send.clear();
@@ -191,9 +191,11 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, char *data) {
 
   uint64_t port = sender.get_port();
   std::string data_str(data);
+  /* send datagram to client with connect_me message */
   if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, data_str)) < 0)
     syserr("send in server");
 
+  /* create new thread for sending file */
   std::thread thread(&Server::handle_send, this, sender);
   if (thread.joinable()) {
     thread.detach();
@@ -248,9 +250,11 @@ void Server::add_file(uint64_t cmd_seq, sockaddr_in addr, char * file, uint64_t 
     Sender sender{*this, path};
 
     uint64_t port = sender.get_port();
+    /* send positive answer to client */
     if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CAN_ADD"], cmd_seq, port, global::empty_str)) < 0)
       syserr("send in port");
 
+    /* create new thread for uploading file */
     std::thread thread(&Server::handle_upload, this, sender);
     if (thread.joinable()) {
       thread.detach();
@@ -284,6 +288,7 @@ int main(int argc, char *argv[]) {
     fatal("arguments");
   }
 
+  /* signal handler to end when SIGINT */
   struct sigaction sig_handler{};
   sig_handler.sa_handler = signal_handler;
   sigemptyset(&sig_handler.sa_mask);
@@ -291,8 +296,11 @@ int main(int argc, char *argv[]) {
 
   sigaction(SIGINT, &sig_handler, nullptr);
 
+  /* create server with command line arguments */
   Server server (parameters);
+  /* start waiting for datagrams */
   server.start_listening();
+  /* clear after SIGINT */
   server.clear();
 
   exit(EXIT_SUCCESS);

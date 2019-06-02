@@ -18,10 +18,9 @@ void Sock::attach_to_multicast(char *mcast_addr) {
   if (setsockopt(sock_no, SOL_SOCKET, SO_REUSEADDR, (void *)&optval, sizeof optval) < 0)
     syserr("setsockopt");
 
-  //TODO set timeval for sending
 }
 
-void Sock::attach_to_port(short port) {
+void Sock::attach_to_port(unsigned int port) {
   local_addr.sin_family = AF_INET;
   local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   local_addr.sin_port = htons(port);
@@ -39,14 +38,14 @@ void Sock::enable_broadcasting() {
     syserr("setsockopt multicast ttl");
 }
 
-void Sock::set_address(char *addr, short port) {
+void Sock::set_address(char *addr, unsigned int port) {
   local_addr.sin_family = AF_INET;
   local_addr.sin_port = htons(port);
   if (inet_aton(addr, &local_addr.sin_addr) == 0)
     syserr("inet_aton");
 }
 
-void Sock::copy_address(sockaddr_in addr, short port) {
+void Sock::copy_address(sockaddr_in addr, unsigned int port) {
   local_addr = addr;
   local_addr.sin_port = htons(port);
 }
