@@ -17,12 +17,15 @@ class Server {
     Server& parent;
     std::string path;
     std::string file;
+    int udp_sock;
+    sockaddr_in client_addr;
+    uint64_t cmd_seq;
 
     /* return socket if client connected to it */
     int get_msg_sock();
 
    public:
-    Sender(Server&, std::string, std::string);
+    Sender(Server&, std::string, std::string, int, sockaddr_in, uint64_t);
     ~Sender() = default;
 
     /* attach socket to port and return number */
@@ -61,7 +64,7 @@ class Server {
   /* remove file from shrd_fldr */
   void remove_file(sockaddr_in, char *);
   /* function for thread to remove file */
-  void handle_remove(std::string, char *);
+  void handle_remove(std::string, std::string);
   /* upload file from client */
   void add_file(uint64_t, sockaddr_in, char *, uint64_t);
   /* function for thread which upload file */

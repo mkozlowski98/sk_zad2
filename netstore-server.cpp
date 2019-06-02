@@ -1,6 +1,7 @@
 #include "netstore-server.h"
 
-Server::Sender::Sender(Server& _parent, std::string _path, std::string _file): sock{SOCK_STREAM}, parent(_parent), path(std::move(_path)), file(std::move(_file)) {}
+Server::Sender::Sender(Server& _parent, std::string _path, std::string _file, int _udp_sock, sockaddr_in _addr, uint64_t _cmd_seq):
+  sock{SOCK_STREAM}, parent(_parent), path(std::move(_path)), file(std::move(_file)), udp_sock(_udp_sock), client_addr(_addr), cmd_seq(_cmd_seq) {}
 
 int Server::Sender::get_msg_sock() {
   int msgsock = -1;
@@ -18,13 +19,19 @@ int Server::Sender::get_msg_sock() {
 }
 
 uint64_t Server::Sender::get_port() {
-  sock.tcp_socket();
   return ntohs(sock.local_addr.sin_port);
 }
 
 void Server::Sender::send_file() {
+  sock.tcp_socket();
+
   if (listen(sock.sock_no, SOMAXCONN) < 0)
     syserr("listen");
+
+  uint64_t port = get_port();
+  /* send datagram to client with connect_me message */
+  if (send(udp_sock, client_addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, file)) < 0)
+    syserr("send in server");
 
   int msgsock = get_msg_sock();
   close(sock.sock_no);
@@ -50,8 +57,14 @@ void Server::Sender::send_file() {
 }
 
 void Server::Sender::upload_file() {
+  sock.tcp_socket();
   if (listen(sock.sock_no, SOMAXCONN) < 0)
     syserr("listen");
+
+  uint64_t port = get_port();
+  /* send positive answer to client */
+  if (send(udp_sock, client_addr, Cmplx_cmd(global::cmd_message["CAN_ADD"], cmd_seq, port, global::empty_str)) < 0)
+    syserr("send in port");
 
   int msgsock = get_msg_sock();
   close(sock.sock_no);
@@ -95,7 +108,6 @@ void Server::clear() {
 void Server::start_listening() {
   list_files();
   connect();
-  std::cout << "Listening\n";
   Cmplx_cmd cmplx_cmd{};
   std::string message;
 
@@ -187,13 +199,7 @@ void Server::send_file(uint64_t cmd_seq, sockaddr_in addr, char *data) {
     return;
 
   std::string path = std::string(parameters.shrd_fldr) + std::string(data);
-  Sender sender{*this, path, file}; //create object for sending file
-
-  uint64_t port = sender.get_port();
-  std::string data_str(data);
-  /* send datagram to client with connect_me message */
-  if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, data_str)) < 0)
-    syserr("send in server");
+  Sender sender{*this, path, file, sock.sock_no, addr, cmd_seq}; //create object for sending file
 
   /* create new thread for sending file */
   std::thread thread(&Server::handle_send, this, sender);
@@ -209,9 +215,10 @@ void Server::handle_send(Sender sender) {
 }
 
 void Server::remove_file(sockaddr_in addr, char * file) {
-  std::string path = std::string(parameters.shrd_fldr) + std::string(file);
+  std::string file_str(file);
+  std::string path = std::string(parameters.shrd_fldr) + file_str;
   if (std::filesystem::exists(path)) { //check if file exists
-    std::thread thread(&Server::handle_remove, this, path, file);
+    std::thread thread(&Server::handle_remove, this, path, file_str);
     if (thread.joinable()) {
       thread.detach();
       threads.emplace_back(std::move(thread));
@@ -222,7 +229,7 @@ void Server::remove_file(sockaddr_in addr, char * file) {
   }
 }
 
-void Server::handle_remove(std::string path, char *file) {
+void Server::handle_remove(std::string path, std::string file) {
   std::unique_lock lock(this->file_mutex);
   std::fstream fd(path.c_str(), std::ios::in);
   if (fd.is_open()) { //first get size of file
@@ -233,7 +240,7 @@ void Server::handle_remove(std::string path, char *file) {
     if (remove(path.c_str()) != 0) //remove file
       syserr("remove file");
     else { //remove file from vector
-      auto it = std::find(files_list.begin(), files_list.end(), std::string(file));
+      auto it = std::find(files_list.begin(), files_list.end(), file);
       files_list.erase(it);
     }
   } else
@@ -247,12 +254,7 @@ void Server::add_file(uint64_t cmd_seq, sockaddr_in addr, char * file, uint64_t 
       syserr("send in server");
   } else {
     std::string path = std::string(parameters.shrd_fldr) + file_str;
-    Sender sender{*this, path, file_str};
-
-    uint64_t port = sender.get_port();
-    /* send positive answer to client */
-    if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CAN_ADD"], cmd_seq, port, global::empty_str)) < 0)
-      syserr("send in port");
+    Sender sender{*this, path, file_str, sock.sock_no, addr, cmd_seq};
 
     /* create new thread for uploading file */
     std::thread thread(&Server::handle_upload, this, sender);

@@ -69,7 +69,7 @@ class Client {
   /* send download request to server */
   void send_fetch(std::string);
   /* download file from server in new thread */
-  void download_file(sockaddr_in, unsigned short, std::string, std::string);
+  void download_file(std::string, unsigned short, std::string, std::string);
   /* send upload request */
   void send_upload(std::string);
   /* go through all servers and try to upload file */

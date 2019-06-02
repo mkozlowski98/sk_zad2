@@ -163,7 +163,8 @@ void Client::send_fetch(std::string data) {
       close(fetch_sock.sock_no);
       unsigned short port = be64toh(cmplx_cmd.param);
       std::string path = std::string(parameters.out_fldr) + data;
-      std::thread thread(&Client::download_file, this, addr, port, path, data);
+      std::string addr_str = inet_ntoa(rec_addr.sin_addr);
+      std::thread thread(&Client::download_file, this, addr_str, port, path, data);
       if (thread.joinable()) {
         thread.detach();
         threads.emplace_back(std::move(thread));
@@ -176,10 +177,10 @@ void Client::send_fetch(std::string data) {
   }
 }
 
-void Client::download_file(sockaddr_in addr, unsigned short port, std::string path, std::string file) {
+void Client::download_file(std::string addr, unsigned short port, std::string path, std::string file) {
   Sock tcp_sock{SOCK_STREAM};
-  tcp_sock.copy_address(addr, port);
-  std::string addr_str = inet_ntoa(addr.sin_addr);
+  tcp_sock.set_address(addr.data(), port);
+  std::string addr_str = addr;
   if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0) {
     std::unique_lock lock(display_mutex);
     std::cout << "File " << file << " downloading failed (" << addr_str << ":" << port << ") error in connect" << std::endl;

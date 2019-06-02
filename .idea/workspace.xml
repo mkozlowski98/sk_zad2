@@ -13,7 +13,9 @@
   <component name="ChangeListManager">
     <list default="true" id="82774f0b-b04d-48d3-bacb-a2d1f2c1614b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/netstore-client.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/netstore-client.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/netstore-client.h" beforeDir="false" afterPath="$PROJECT_DIR$/netstore-client.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/netstore-server.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/netstore-server.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/netstore-server.h" beforeDir="false" afterPath="$PROJECT_DIR$/netstore-server.h" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -54,17 +56,17 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/messages.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="90">
-                  <caret line="6" column="51" selection-start-line="6" selection-start-column="51" selection-end-line="6" selection-end-column="51" />
+                <state relative-caret-position="210">
+                  <caret line="14" column="53" lean-forward="true" selection-start-line="14" selection-start-column="53" selection-end-line="14" selection-end-column="53" />
                 </state>
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/netstore-client.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="525">
-                  <caret line="274" column="108" selection-start-line="274" selection-start-column="108" selection-end-line="274" selection-end-column="108" />
+                <state relative-caret-position="255">
+                  <caret line="166" column="63" selection-start-line="166" selection-start-column="63" selection-end-line="166" selection-end-column="63" />
                   <folding>
                     <element signature="e#0#28#0" expanded="true" />
                     <element signature="e#159#285#0" />
@@ -82,16 +84,18 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/netstore-server.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="375">
-                  <caret line="40" column="33" selection-start-line="40" selection-start-column="33" selection-end-line="40" selection-end-column="33" />
+                <state relative-caret-position="605">
+                  <caret line="246" column="27" lean-forward="true" selection-start-line="246" selection-start-column="27" selection-end-line="246" selection-end-column="27" />
                   <folding>
+                    <element signature="e#1439#1466#0" />
+                    <element signature="e#2654#2775#0" />
+                    <element signature="e#2787#3057#0" />
                     <element signature="e#3046#3306#0" />
                     <element signature="e#3308#4025#0" />
                     <element signature="e#4027#4325#0" />
-                    <element signature="e#6041#6092#0" />
                     <element signature="e#6540#6587#0" />
                     <element signature="e#6024#6243#0" />
                     <element signature="e#8529#9336#0" />
@@ -143,8 +147,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/netstore-client.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="615">
-                  <caret line="71" column="48" selection-start-line="71" selection-start-column="48" selection-end-line="71" selection-end-column="48" />
+                <state relative-caret-position="1065">
+                  <caret line="71" column="32" selection-start-line="71" selection-start-column="32" selection-end-line="71" selection-end-column="32" />
                   <folding>
                     <element signature="e#63#81#0" expanded="true" />
                   </folding>
@@ -155,8 +159,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/netstore-server.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-116">
-                  <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
+                <state relative-caret-position="630">
+                  <caret line="66" column="45" selection-start-line="66" selection-start-column="45" selection-end-line="66" selection-end-column="45" />
                   <folding>
                     <element signature="e#63#82#0" expanded="true" />
                   </folding>
@@ -193,19 +197,19 @@
         <option value="$PROJECT_DIR$/messages.cpp" />
         <option value="$PROJECT_DIR$/globals.h" />
         <option value="$PROJECT_DIR$/messages.h" />
-        <option value="$PROJECT_DIR$/netstore-client.h" />
-        <option value="$PROJECT_DIR$/netstore-server.h" />
         <option value="$PROJECT_DIR$/sock.cpp" />
         <option value="$PROJECT_DIR$/sock.h" />
-        <option value="$PROJECT_DIR$/netstore-server.cpp" />
+        <option value="$PROJECT_DIR$/netstore-client.h" />
         <option value="$PROJECT_DIR$/netstore-client.cpp" />
+        <option value="$PROJECT_DIR$/netstore-server.h" />
+        <option value="$PROJECT_DIR$/netstore-server.cpp" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="7">
-    <option name="y" value="27" />
-    <option name="width" value="940" />
-    <option name="height" value="1053" />
+    <option name="y" value="25" />
+    <option name="width" value="1920" />
+    <option name="height" value="1055" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -230,7 +234,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../old" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -283,12 +287,12 @@
       <workItem from="1559219809659" duration="15311000" />
       <workItem from="1559291496041" duration="23359000" />
       <workItem from="1559385767976" duration="4482000" />
-      <workItem from="1559460115584" duration="32588000" />
+      <workItem from="1559460115584" duration="36669000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="140943000" />
+    <option name="totallyTimeSpent" value="145024000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -413,33 +417,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/messages.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="51" selection-start-line="6" selection-start-column="51" selection-end-line="6" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/netstore-client.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="71" column="48" selection-start-line="71" selection-start-column="48" selection-end-line="71" selection-end-column="48" />
-          <folding>
-            <element signature="e#63#81#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/netstore-server.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-116">
-          <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
-          <folding>
-            <element signature="e#63#82#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sock.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="574">
@@ -450,26 +427,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/netstore-server.cpp">
+    <entry file="file://$PROJECT_DIR$/messages.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="40" column="33" selection-start-line="40" selection-start-column="33" selection-end-line="40" selection-end-column="33" />
+        <state relative-caret-position="210">
+          <caret line="14" column="53" lean-forward="true" selection-start-line="14" selection-start-column="53" selection-end-line="14" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/netstore-client.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1065">
+          <caret line="71" column="32" selection-start-line="71" selection-start-column="32" selection-end-line="71" selection-end-column="32" />
           <folding>
-            <element signature="e#3046#3306#0" />
-            <element signature="e#3308#4025#0" />
-            <element signature="e#4027#4325#0" />
-            <element signature="e#6041#6092#0" />
-            <element signature="e#6540#6587#0" />
-            <element signature="e#6024#6243#0" />
-            <element signature="e#8529#9336#0" />
+            <element signature="e#63#81#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/netstore-client.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="274" column="108" selection-start-line="274" selection-start-column="108" selection-end-line="274" selection-end-column="108" />
+        <state relative-caret-position="255">
+          <caret line="166" column="63" selection-start-line="166" selection-start-column="63" selection-end-line="166" selection-end-column="63" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
             <element signature="e#159#285#0" />
@@ -482,6 +460,34 @@
             <element signature="e#3248#3901#0" />
             <element signature="e#2501#2733#0" />
             <element signature="e#2735#2863#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/netstore-server.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="66" column="45" selection-start-line="66" selection-start-column="45" selection-end-line="66" selection-end-column="45" />
+          <folding>
+            <element signature="e#63#82#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/netstore-server.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="605">
+          <caret line="246" column="27" lean-forward="true" selection-start-line="246" selection-start-column="27" selection-end-line="246" selection-end-column="27" />
+          <folding>
+            <element signature="e#1439#1466#0" />
+            <element signature="e#2654#2775#0" />
+            <element signature="e#2787#3057#0" />
+            <element signature="e#3046#3306#0" />
+            <element signature="e#3308#4025#0" />
+            <element signature="e#4027#4325#0" />
+            <element signature="e#6540#6587#0" />
+            <element signature="e#6024#6243#0" />
+            <element signature="e#8529#9336#0" />
           </folding>
         </state>
       </provider>
