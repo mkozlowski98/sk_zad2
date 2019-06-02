@@ -179,24 +179,33 @@ void Server::handle_send(Sender sender) {
 void Server::remove_file(sockaddr_in addr, char * file) {
   std::string path = std::string(parameters.shrd_fldr) + std::string(file);
   if (std::filesystem::exists(path)) { //check if file exists
-    std::fstream fd(path.c_str(), std::ios::in);
-    if (fd.is_open()) { //first get size of file
-      fd.seekg(0, std::ios::end);
-      int file_size = fd.tellg();
-      parameters.max_space += file_size;
-      fd.close();
-      if (remove(path.c_str()) != 0) //remove file
-        syserr("remove file");
-      else { //remove file from vector
-        auto it = std::find(files_list.begin(), files_list.end(), std::string(file));
-        files_list.erase(it);
-      }
-    } else
-      syserr("file_size");
+    std::thread thread(&Server::handle_remove, this, path, file);
+    if (thread.joinable()) {
+      thread.detach();
+      threads.emplace_back(std::move(thread));
+    }
   } else {
     std::string message("trying to remove non-existent file");
     print_error(addr, &message);
   }
+}
+
+void Server::handle_remove(std::string path, char *file) {
+  std::unique_lock lock(this->file_mutex);
+  std::fstream fd(path.c_str(), std::ios::in);
+  if (fd.is_open()) { //first get size of file
+    fd.seekg(0, std::ios::end);
+    int file_size = fd.tellg();
+    parameters.max_space += file_size;
+    fd.close();
+    if (remove(path.c_str()) != 0) //remove file
+      syserr("remove file");
+    else { //remove file from vector
+      auto it = std::find(files_list.begin(), files_list.end(), std::string(file));
+      files_list.erase(it);
+    }
+  } else
+    syserr("file_size");
 }
 
 void Server::add_file(uint64_t cmd_seq, sockaddr_in addr, char * file, uint64_t size) {

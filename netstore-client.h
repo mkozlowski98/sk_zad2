@@ -33,6 +33,7 @@ class Client {
   static void download_file(std::string, unsigned short, std::string, std::string);
   void send_upload(std::string);
   void send_remove(std::string);
+  void exit();
 };
 
 #endif //ZAD2_NETSTORE_CLIENT_H

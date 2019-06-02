@@ -38,8 +38,9 @@ class Server {
   void filtered_files(uint64_t, sockaddr_in, char *);
   bool file_exist(std::string&, sockaddr_in);
   void send_file(uint64_t, sockaddr_in, char *);
-  void handle_send (Sender);
+  void handle_send(Sender);
   void remove_file(sockaddr_in, char *);
+  void handle_remove(std::string, char *);
   void add_file(uint64_t, sockaddr_in, char *, uint64_t);
   static void print_error(sockaddr_in, std::string*);
 

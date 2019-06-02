@@ -107,7 +107,6 @@ void Client::send_fetch(std::string data) {
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
       close(fetch_sock.sock_no);
       unsigned short port = be64toh(cmplx_cmd.param);
-      std::cout << port << std::endl;
       std::string addr = inet_ntoa(rec_addr.sin_addr);
       std::string path = std::string(parameters.out_fldr) + data;
       std::thread thread(download_file, addr, port, path, data);
@@ -178,6 +177,10 @@ void Client::send_remove(std::string data) {
 //  return addr;
 //}
 
+void Client::exit() {
+  close(sock.sock_no);
+}
+
 int main(int argc, char *argv[]) {
   struct client_param parameters {};
   parameters.timeout = TIMEOUT;
@@ -209,8 +212,10 @@ int main(int argc, char *argv[]) {
         client.send_discover(true);
       if (line[0] == "search")
         client.send_search(global::empty_str);
-      if (line[0] == "exit") //TODO close all sockets
+      if (line[0] == "exit") {
+        client.exit();
         exit = true;
+      }
     }
   }
 
