@@ -83,9 +83,11 @@ void Client::send_discover(bool show) {
     sock.set_timeout(recv_timeout);
     if (receive(sock.sock_no, rec_addr, cmplx_cmd) > 0) {
       group.insert(Server_Holder{be64toh(cmplx_cmd.param), rec_addr});
-      if (show)
+      if (show) {
+        std::unique_lock lock(display_mutex);
         std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " (" << cmplx_cmd.data << ") with free space "\
           << be64toh(cmplx_cmd.param) << std::endl;
+      }
     }
   }
 }
@@ -118,6 +120,7 @@ void Client::found_files(sockaddr_in addr, char * data) {
 }
 
 void Client::print_files() {
+  std::unique_lock lock(display_mutex);
   for (auto &file: files)
     std::cout << file.file << " (" << inet_ntoa(file.addr.sin_addr) << ")" << std::endl;
 }
@@ -147,15 +150,17 @@ void Client::send_fetch(std::string data) {
       close(fetch_sock.sock_no);
       unsigned port = be64toh(cmplx_cmd.param);
       std::string path = std::string(parameters.out_fldr) + data;
-      std::thread thread(download_file, addr, port, path, data);
+      std::thread thread(&Client::download_file, this, addr, port, path, data);
       if (thread.joinable()) {
         thread.detach();
         threads.emplace_back(std::move(thread));
       }
     }
     close(fetch_sock.sock_no);
-  } else
+  } else {
+    std::unique_lock lock(display_mutex);
     std::cout << "file doesn't exist" << std::endl;
+  }
 }
 
 void Client::download_file(sockaddr_in addr, unsigned short port, std::string path, std::string file) {
@@ -163,6 +168,7 @@ void Client::download_file(sockaddr_in addr, unsigned short port, std::string pa
   tcp_sock.copy_address(addr, port);
   std::string addr_str = inet_ntoa(addr.sin_addr);
   if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0) {
+    std::unique_lock lock(display_mutex);
     std::cout << "File " << file << " downloading failed (" << addr_str << ":" << port << ") error in connect" << std::endl;
     syserr("connect");
   } else {
@@ -173,6 +179,7 @@ void Client::download_file(sockaddr_in addr, unsigned short port, std::string pa
       ssize_t len;
       do {
         if ((len = recv(tcp_sock.sock_no, (void *)buffer, BUFF_SIZE - 1, 0)) < 0) {
+          std::unique_lock lock(display_mutex);
           std::cout << "File " << file << " downloading failed (" << addr_str << ":" << port << ") error in read" << std::endl;
           syserr("read");
         }
@@ -183,9 +190,11 @@ void Client::download_file(sockaddr_in addr, unsigned short port, std::string pa
       free(buffer);
       fd.close();
       if (len == 0) {
+        std::unique_lock lock(display_mutex);
         std::cout << "File " << file << " downloaded (" << addr_str << ":" << port << ")" << std::endl;
       }
     } else {
+      std::unique_lock lock(display_mutex);
       std::cout << "File " << file << " downloading failed (" << addr_str << ":" << port << ") couldn't create file" << std::endl;
     }
   }
@@ -201,6 +210,7 @@ void Client::send_upload(std::string data) {
     send_discover(false);
     uint64_t size = get_size(path);
     if (group.begin()->size < size) { //file is too big
+      std::unique_lock lock(display_mutex);
       std::cout << "File " << data << " too big" << std::endl;
       return;
     }
@@ -217,7 +227,7 @@ void Client::send_upload(std::string data) {
       if (cmplx_cmd.cmd == global::cmd_message["CAN_ADD"]) {
         close(upload_sock.sock_no);
         unsigned port = be64toh(cmplx_cmd.param);
-        std::thread thread(upload_file, group.begin()->addr, port, path, data);
+        std::thread thread(&Client::upload_file, this, group.begin()->addr, port, path, data);
         if (thread.joinable()) {
           thread.detach();
           threads.emplace_back(std::move(thread));
@@ -226,8 +236,10 @@ void Client::send_upload(std::string data) {
         std::cout << "NO_WAY" << std::endl;
       }
     }
-  } else
+  } else {
+    std::unique_lock lock(display_mutex);
     std::cout << "File " << data << " does not exist" << std::endl;
+  }
 }
 
 void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path, std::string file) {
@@ -235,6 +247,7 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
   tcp_sock.copy_address(addr, port);
   std::string addr_str = inet_ntoa(addr.sin_addr);
   if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0) {
+    std::unique_lock lock(display_mutex);
     std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") error in connect" << std::endl;
     syserr("connect");
   } else {
@@ -242,6 +255,7 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
     char *buffer;
     buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
     if (!fd.is_open()) {
+      std::unique_lock lock(display_mutex);
       std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") couldn't open a file"
                 << std::endl;
       syserr("fopen");
@@ -251,6 +265,7 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
         memset(buffer, 0, 1024);
         fd.read(buffer, 1024);
         if (send(tcp_sock.sock_no, (void *) buffer, fd.gcount(), 0) < 0) {
+          std::unique_lock lock(display_mutex);
           std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") error in sendto"
                     << std::endl;
           syserr("send in client");

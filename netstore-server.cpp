@@ -284,8 +284,6 @@ int main(int argc, char *argv[]) {
     fatal("arguments");
   }
 
-
-  Server server (parameters);
   struct sigaction sig_handler{};
   sig_handler.sa_handler = signal_handler;
   sigemptyset(&sig_handler.sa_mask);
@@ -293,6 +291,7 @@ int main(int argc, char *argv[]) {
 
   sigaction(SIGINT, &sig_handler, nullptr);
 
+  Server server (parameters);
   server.start_listening();
   server.clear();
 

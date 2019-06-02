@@ -50,8 +50,8 @@ class Server {
  public:
   explicit Server(struct server_param);
   ~Server() = default;
-  void clear();
 
+  void clear();
   void start_listening();
 };
 

@@ -34,6 +34,7 @@ class Client {
   struct client_param parameters;
   uint64_t cmd_seq;
   Sock sock;
+  std::shared_mutex display_mutex;
   std::set<Client::Server_Holder, Client::Server_Comparator> group;
   std::vector<Client::File_Info> files;
   std::vector<std::thread> threads;
@@ -48,9 +49,9 @@ class Client {
   void found_files(sockaddr_in, char *);
   void print_files();
   void send_fetch(std::string);
-  static void download_file(sockaddr_in, unsigned short, std::string, std::string);
+  void download_file(sockaddr_in, unsigned short, std::string, std::string);
   void send_upload(std::string);
-  static void upload_file(sockaddr_in, unsigned short, std::string, std::string);
+  void upload_file(sockaddr_in, unsigned short, std::string, std::string);
   void send_remove(std::string);
   void exit();
 
