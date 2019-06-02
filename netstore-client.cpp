@@ -52,7 +52,7 @@ void Client::send_discover(bool show) {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
     if (receive(sock.sock_no, rec_addr, cmplx_cmd) > 0) {
-      group.insert(Server_Holder{cmplx_cmd.param, rec_addr});
+      group.insert(Server_Holder{be64toh(cmplx_cmd.param), rec_addr});
       if (show)
         std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " (" << cmplx_cmd.data << ") with free space "\
           << be64toh(cmplx_cmd.param) << std::endl;
@@ -167,13 +167,67 @@ void Client::send_upload(std::string data) {
     path = parameters.out_fldr + data;
   else
     path = data;
-//  if (std::filesystem::exists(path)) {
-//    send_discover(false);
-////    sockaddr_in addr = get_max_size();
-//    uint64_t file_len;
-////    std::fstream fd (path, )
-//  } else
-//    std::cout << "File " << data << "does not exist" << std::endl;
+  if (std::filesystem::exists(path)) {
+    send_discover(false);
+    uint64_t size = get_size(path);
+    if (group.begin()->size < size) { //file is too big
+      std::cout << "File " << data << " too big" << std::endl;
+      return;
+    }
+    Sock upload_sock{SOCK_DGRAM};
+    sockaddr_in rec_addr{};
+    Cmplx_cmd cmplx_cmd{};
+    upload_sock.copy_address(group.begin()->addr, ntohs(group.begin()->addr.sin_port));
+    timeval timeout{};
+    timeout.tv_sec = parameters.timeout / 1000;
+    upload_sock.set_timeout(timeout);
+    if (send(upload_sock.sock_no, upload_sock.local_addr, Cmplx_cmd(global::cmd_message["ADD"], cmd_seq, size, data)) < 0)
+      syserr("send");
+    if (receive(upload_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
+      if (cmplx_cmd.cmd == global::cmd_message["CAN_ADD"]) {
+        close(upload_sock.sock_no);
+        unsigned port = be64toh(cmplx_cmd.param);
+        std::thread thread(upload_file, group.begin()->addr, port, path, data);
+        if (thread.joinable()) {
+          thread.detach();
+          threads.emplace_back(std::move(thread));
+        }
+      } else {
+        std::cout << "NO_WAY" << std::endl;
+      }
+    }
+  } else
+    std::cout << "File " << data << " does not exist" << std::endl;
+}
+
+void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path, std::string file) {
+  Sock tcp_sock{SOCK_STREAM};
+  tcp_sock.copy_address(addr, port);
+  std::string addr_str = inet_ntoa(addr.sin_addr);
+  if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0) {
+    std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") error in connect" << std::endl;
+    syserr("connect");
+  } else {
+    std::fstream fd(path.c_str(), std::ios::in);
+    char *buffer;
+    buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
+    if (!fd.is_open())
+      syserr("fopen");
+    else {
+      while (!fd.eof()) {
+        memset(buffer, 0, 1024);
+        fd.read(buffer, 1024);
+        if (send(tcp_sock.sock_no, (void *) buffer, fd.gcount(), 0) < 0) {
+          std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") error in sendto"
+                    << std::endl;
+          syserr("send in client");
+        }
+      }
+      free(buffer);
+      fd.close();
+    }
+  }
+  close(tcp_sock.sock_no);
 }
 
 void Client::send_remove(std::string data) {
@@ -181,14 +235,17 @@ void Client::send_remove(std::string data) {
     syserr("send");
 }
 
-//sockaddr_in Client::get_max_size() {
-//  sockaddr_in addr{};
-//  unsigned long long size = 0;
-//  for (auto it: group)
-//    if (it.first > size)
-//      addr = it.second;
-//  return addr;
-//}
+
+uint64_t Client::get_size(std::string path) {
+  std::fstream fd(path.c_str(), std::ios::in);
+  uint64_t size = 0;
+  if (fd.is_open()) {
+    fd.seekg(0, std::ios::end);
+    size = fd.tellg();
+    fd.close();
+  }
+  return size;
+}
 
 void Client::exit() {
   for (auto &thread: threads)

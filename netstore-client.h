@@ -37,7 +37,7 @@ class Client {
   std::set<Client::Server_Holder, Client::Server_Comparator> group;
   std::vector<Client::File_Info> files;
   std::vector<std::thread> threads;
-//  sockaddr_in get_max_size();
+  uint64_t get_size(std::string);
 
  public:
   Client(struct client_param, uint64_t);
@@ -53,6 +53,7 @@ class Client {
   void send_fetch(std::string);
   static void download_file(sockaddr_in, unsigned short, std::string, std::string);
   void send_upload(std::string);
+  static void upload_file(sockaddr_in, unsigned short, std::string, std::string);
   void send_remove(std::string);
   void exit();
 };

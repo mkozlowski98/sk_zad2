@@ -24,6 +24,7 @@ class Server {
 
     uint64_t get_port();
     void send_file();
+    void upload_file();
   };
 
   struct server_param parameters;
@@ -42,6 +43,8 @@ class Server {
   void remove_file(sockaddr_in, char *);
   void handle_remove(std::string, char *);
   void add_file(uint64_t, sockaddr_in, char *, uint64_t);
+  void handle_upload(Sender);
+  bool check_file(std::string&);
   static void print_error(sockaddr_in, std::string*);
 
  public:

@@ -6,7 +6,6 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -O2
 LDFLAGS = -std=c++17 -Wall -Wextra -O2
 LFLAGS = -lstdc++fs -pthread
-CLFLAGS = -pthread
 
 all: $(TARGETS)
 
@@ -14,7 +13,7 @@ netstore-server: netstore-server.o err.o sock.o messages.o globals.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LFLAGS)
 
 netstore-client: netstore-client.o err.o sock.o messages.o globals.o
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(CLFLAGS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LFLAGS)
 
 .PHONY: clean
 

@@ -49,6 +49,34 @@ void Server::Sender::send_file() {
   }
 }
 
+void Server::Sender::upload_file() {
+  if (listen(sock.sock_no, SOMAXCONN) < 0)
+    syserr("listen");
+
+  int msgsock = get_msg_sock();
+  close(sock.sock_no);
+
+  if (msgsock > 0) {
+    std::fstream fd(path.c_str(), std::ios::out);
+    if (fd.is_open()) {
+      char *buffer;
+      buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
+      ssize_t len;
+      do {
+        if ((len = recv(msgsock, (void *) buffer, BUFF_SIZE - 1, 0)) < 0) {
+          syserr("read");
+        }
+        if (len > 0) {
+          fd.write(buffer, len);
+        }
+      } while (len > 0);
+      free(buffer);
+      fd.close();
+    }
+  }
+  close(msgsock);
+}
+
 Server::Server(struct server_param _parameters): parameters(_parameters), sock{SOCK_DGRAM} {}
 
 void Server::clear() {
@@ -77,10 +105,10 @@ void Server::start_listening() {
     memset(&cmplx_cmd, 0, sizeof(cmplx_cmd));
     receive(sock.sock_no, addr, cmplx_cmd);
     message = cmplx_cmd.cmd;
-//    std::cout << cmplx_cmd.cmd << " port: " << ntohs(addr.sin_port)<< " addr: " << inet_ntoa(addr.sin_addr) << "\n";
+    std::cout << cmplx_cmd.cmd << " port: " << ntohs(addr.sin_port)<< " addr: " << inet_ntoa(addr.sin_addr) << "\n";
     if (message == global::cmd_message["HELLO"])
       hello(be64toh(cmplx_cmd.cmd_seq), addr);
-    if (message == global::cmd_message["LIST"])
+    else if (message == global::cmd_message["LIST"])
       filtered_files(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
     else if (message == global::cmd_message["GET"])
       send_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
@@ -88,9 +116,11 @@ void Server::start_listening() {
       remove_file(addr, cmplx_cmd.data);
     else if (message == global::cmd_message["ADD"])
       add_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data, be64toh(cmplx_cmd.param));
-    else if (global::flag) {
+    else {
+      if (global::flag) {
         std::string mes("Unknown message");
         print_error(addr, &mes);
+      }
     }
 
   }
@@ -209,8 +239,33 @@ void Server::handle_remove(std::string path, char *file) {
 }
 
 void Server::add_file(uint64_t cmd_seq, sockaddr_in addr, char * file, uint64_t size) {
-  std::string path = std::string(parameters.shrd_fldr) + std::string(file);
+  std::string file_str(file);
+  if (size > parameters.max_space || check_file(file_str)) {
+    if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["NO_WAY"], cmd_seq, file_str)) < 0)
+      syserr("send in server");
+  } else {
+    std::string path = std::string(parameters.shrd_fldr) + file_str;
+    Sender sender{*this, path};
 
+    uint64_t port = sender.get_port();
+    if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["CAN_ADD"], cmd_seq, port, global::empty_str)) < 0)
+      syserr("send in port");
+
+    std::thread thread(&Server::handle_upload, this, sender);
+    if (thread.joinable()) {
+      thread.detach();
+      threads.emplace_back(std::move(thread));
+    }
+  }
+}
+
+void Server::handle_upload(Sender sender) {
+  std::unique_lock lock(this->file_mutex);
+  sender.upload_file();
+}
+
+bool Server::check_file(std::string &file) {
+  return (std::find(files_list.begin(), files_list.end(), file) != files_list.end() || file.find('/') != std::string::npos);
 }
 
 void Server::print_error(sockaddr_in addr, std::string *message) {
