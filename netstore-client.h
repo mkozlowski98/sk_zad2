@@ -37,11 +37,8 @@ class Client {
   std::set<Client::Server_Holder, Client::Server_Comparator> group;
   std::vector<Client::File_Info> files;
   std::vector<std::thread> threads;
+
   uint64_t get_size(std::string);
-
- public:
-  Client(struct client_param, uint64_t);
-
   static std::vector<std::string> get_command();
   void connect();
   template <typename clock>
@@ -56,6 +53,11 @@ class Client {
   static void upload_file(sockaddr_in, unsigned short, std::string, std::string);
   void send_remove(std::string);
   void exit();
+
+ public:
+  Client(struct client_param, uint64_t);
+
+  void listen();
 };
 
 #endif //ZAD2_NETSTORE_CLIENT_H

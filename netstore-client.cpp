@@ -11,6 +11,36 @@ bool Client::Server_Comparator::operator()(const Client::Server_Holder & server1
 
 Client::Client(struct client_param parameters, uint64_t _seq): parameters(parameters), cmd_seq(_seq), sock {SOCK_DGRAM} {}
 
+void Client::listen() {
+  std::vector<std::string> line;
+  bool exit = false;
+
+  connect();
+
+  while (!exit) {
+    line = get_command();
+    if (line.size() == 2) {
+      if (line[0] == "search")
+        send_search(line[1]);
+      if (line[0] == "fetch")
+        send_fetch(line[1]);
+      if (line[0] == "upload")
+        send_upload(line[1]);
+      if (line[0] == "remove")
+        send_remove(line[1]);
+    } else if (line.size() == 1) {
+      if (line[0] == "discover")
+        send_discover(true);
+      if (line[0] == "search")
+        send_search(global::empty_str);
+      if (line[0] == "exit") {
+        this->exit();
+        exit = true;
+      }
+    }
+  }
+}
+
 std::vector<std::string> Client::get_command() {
   std::vector<std::string> line;
   std::string command;
@@ -211,8 +241,11 @@ void Client::upload_file(sockaddr_in addr, unsigned short port, std::string path
     std::fstream fd(path.c_str(), std::ios::in);
     char *buffer;
     buffer = (char *) malloc(BUFF_SIZE * sizeof(char));
-    if (!fd.is_open())
+    if (!fd.is_open()) {
+      std::cout << "File " << file << " uploading failed (" << addr_str << ":" << port << ") couldn't open a file"
+                << std::endl;
       syserr("fopen");
+    }
     else {
       while (!fd.eof()) {
         memset(buffer, 0, 1024);
@@ -235,7 +268,6 @@ void Client::send_remove(std::string data) {
     syserr("send");
 }
 
-
 uint64_t Client::get_size(std::string path) {
   std::fstream fd(path.c_str(), std::ios::in);
   uint64_t size = 0;
@@ -257,8 +289,6 @@ void Client::exit() {
 int main(int argc, char *argv[]) {
   struct client_param parameters {};
   parameters.timeout = TIMEOUT;
-  std::vector<std::string> line;
-  bool exit = false;
 
   /* parsing program's arguments */
   if (!client_parse(argc, argv, &parameters)) {
@@ -267,29 +297,7 @@ int main(int argc, char *argv[]) {
   }
 
   Client client(parameters, 2);
-  client.connect();
+  client.listen();
 
-  while (!exit) {
-    line = client.get_command();
-    if (line.size() == 2) {
-      if (line[0] == "search")
-        client.send_search(line[1]);
-      if (line[0] == "fetch")
-        client.send_fetch(line[1]);
-      if (line[0] == "upload")
-        client.send_upload(line[1]);
-      if (line[0] == "remove")
-        client.send_remove(line[1]);
-    } else if (line.size() == 1) {
-      if (line[0] == "discover")
-        client.send_discover(true);
-      if (line[0] == "search")
-        client.send_search(global::empty_str);
-      if (line[0] == "exit") {
-        client.exit();
-        exit = true;
-      }
-    }
-  }
-
+  exit(EXIT_SUCCESS);
 }
