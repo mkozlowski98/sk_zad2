@@ -1,6 +1,14 @@
 #include "netstore-client.h"
 #include "err.h"
 
+Client::Server_Holder::Server_Holder(unsigned long long _size, sockaddr_in _addr): size(_size), addr(_addr) {}
+
+Client::File_Info::File_Info(std::string _file, sockaddr_in _addr): file(std::move(_file)), addr(_addr) {}
+
+bool Client::Server_Comparator::operator()(const Client::Server_Holder & server1, const Client::Server_Holder &server2) const {
+  return server1.size >= server2.size;
+}
+
 Client::Client(struct client_param parameters, uint64_t _seq): parameters(parameters), cmd_seq(_seq), sock {SOCK_DGRAM} {}
 
 std::vector<std::string> Client::get_command() {
@@ -44,7 +52,7 @@ void Client::send_discover(bool show) {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
     if (receive(sock.sock_no, rec_addr, cmplx_cmd) > 0) {
-      group.emplace_back(std::make_pair(be64toh(cmplx_cmd.param), inet_ntoa(rec_addr.sin_addr)));
+      group.insert(Server_Holder{cmplx_cmd.param, rec_addr});
       if (show)
         std::cout << "Found " << inet_ntoa(rec_addr.sin_addr) << " (" << cmplx_cmd.data << ") with free space "\
           << be64toh(cmplx_cmd.param) << std::endl;
@@ -67,38 +75,39 @@ void Client::send_search(std::string data) {
     set_recvtime(&recv_timeout, time);
     sock.set_timeout(recv_timeout);
     if (receive(sock.sock_no, rec_addr, simpl_cmd) > 0)
-      found_files(inet_ntoa(rec_addr.sin_addr), simpl_cmd.data);
+      found_files(rec_addr, simpl_cmd.data);
   }
   print_files();
 }
 
-void Client::found_files(char * addr, char * data) {
+void Client::found_files(sockaddr_in addr, char * data) {
   std::stringstream stream(data);
-  std::string addr_str(addr);
   std::string file;
   while (getline(stream, file, '\n'))
-    files.emplace_back(std::make_pair(file, addr_str));
+    files.emplace_back(File_Info{file, addr});
 }
 
 void Client::print_files() {
-  for (auto &pair: files)
-    std::cout << pair.first << " (" << pair.second << ")" << std::endl;
+  for (auto &file: files)
+    std::cout << file.file << " (" << inet_ntoa(file.addr.sin_addr) << ")" << std::endl;
 }
 
 void Client::send_fetch(std::string data) {
-  std::string addr_str;
-  for (auto &pair: files) {
-    if (pair.first == data) {
-      addr_str = pair.second;
+  sockaddr_in addr {};
+  bool found = false;
+  for (auto &file: files) {
+    if (file.file == data) {
+      addr = file.addr;
+      found = true;
       break;
     }
   }
 
-  if (addr_str != global::empty_str) {
+  if (found) {
     Sock fetch_sock {SOCK_DGRAM};
     sockaddr_in rec_addr{};
     Cmplx_cmd cmplx_cmd{};
-    fetch_sock.set_address(addr_str.data(), parameters.cmd_port);
+    fetch_sock.copy_address(addr, ntohs(addr.sin_port));
     timeval timeout{};
     timeout.tv_sec = parameters.timeout / 1000;
     fetch_sock.set_timeout(timeout);
@@ -106,21 +115,25 @@ void Client::send_fetch(std::string data) {
       syserr("send");
     if (receive(fetch_sock.sock_no, rec_addr, cmplx_cmd) > 0) {
       close(fetch_sock.sock_no);
-      unsigned short port = be64toh(cmplx_cmd.param);
-      std::string addr = inet_ntoa(rec_addr.sin_addr);
+      unsigned port = be64toh(cmplx_cmd.param);
       std::string path = std::string(parameters.out_fldr) + data;
       std::thread thread(download_file, addr, port, path, data);
-      thread.join();
+      if (thread.joinable()) {
+        thread.detach();
+        threads.emplace_back(std::move(thread));
+      }
     }
+    close(fetch_sock.sock_no);
   } else
     std::cout << "file doesn't exist" << std::endl;
 }
 
-void Client::download_file(std::string addr, unsigned short port, std::string path, std::string file) {
+void Client::download_file(sockaddr_in addr, unsigned short port, std::string path, std::string file) {
   Sock tcp_sock{SOCK_STREAM};
-  tcp_sock.set_address(addr.data(), port);
+  tcp_sock.copy_address(addr, port);
+  std::string addr_str = inet_ntoa(addr.sin_addr);
   if (::connect(tcp_sock.sock_no, (sockaddr *)&(tcp_sock.local_addr), sizeof(tcp_sock.local_addr)) < 0) {
-    std::cout << "File " << file << " downloading failed (" << addr << ":" << port << ") error in connect" << std::endl;
+    std::cout << "File " << file << " downloading failed (" << addr_str << ":" << port << ") error in connect" << std::endl;
     syserr("connect");
   } else {
     std::fstream fd(path.c_str(), std::ios::out);
@@ -130,7 +143,7 @@ void Client::download_file(std::string addr, unsigned short port, std::string pa
       ssize_t len;
       do {
         if ((len = recv(tcp_sock.sock_no, (void *)buffer, BUFF_SIZE - 1, 0)) < 0) {
-          std::cout << "File " << file << " downloading failed (" << addr << ":" << port << ") error in read" << std::endl;
+          std::cout << "File " << file << " downloading failed (" << addr_str << ":" << port << ") error in read" << std::endl;
           syserr("read");
         }
         if (len > 0) {
@@ -140,10 +153,10 @@ void Client::download_file(std::string addr, unsigned short port, std::string pa
       free(buffer);
       fd.close();
       if (len == 0) {
-        std::cout << "File " << file << " downloaded (" << addr << ":" << port << ")" << std::endl;
+        std::cout << "File " << file << " downloaded (" << addr_str << ":" << port << ")" << std::endl;
       }
     } else {
-      std::cout << "File " << file << " downloading failed (" << addr << ":" << port << ") couldn't create file" << std::endl;
+      std::cout << "File " << file << " downloading failed (" << addr_str << ":" << port << ") couldn't create file" << std::endl;
     }
   }
 }
@@ -178,6 +191,9 @@ void Client::send_remove(std::string data) {
 //}
 
 void Client::exit() {
+  for (auto &thread: threads)
+    if (thread.joinable())
+      thread.join();
   close(sock.sock_no);
 }
 

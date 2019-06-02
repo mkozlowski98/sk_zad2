@@ -11,12 +11,33 @@
 
 class Client {
  private:
+
+  class Server_Holder {
+   public:
+    unsigned long long size;
+    sockaddr_in addr;
+    Server_Holder(unsigned long long, sockaddr_in);
+  };
+
+  class File_Info {
+   public:
+    std::string file;
+    sockaddr_in addr;
+
+    File_Info(std::string, sockaddr_in);
+  };
+
+  struct Server_Comparator {
+    bool operator()(const Server_Holder&, const Server_Holder&) const;
+  };
+
   struct client_param parameters;
   uint64_t cmd_seq;
   Sock sock;
-  std::vector<std::pair<unsigned long long, std::string>> group;
-  std::vector<std::pair<std::string, std::string>> files;
-  sockaddr_in get_max_size();
+  std::set<Client::Server_Holder, Client::Server_Comparator> group;
+  std::vector<Client::File_Info> files;
+  std::vector<std::thread> threads;
+//  sockaddr_in get_max_size();
 
  public:
   Client(struct client_param, uint64_t);
@@ -27,10 +48,10 @@ class Client {
   void set_recvtime(timeval*, std::chrono::time_point<clock>);
   void send_discover(bool);
   void send_search(std::string);
-  void found_files(char *, char *);
+  void found_files(sockaddr_in, char *);
   void print_files();
   void send_fetch(std::string);
-  static void download_file(std::string, unsigned short, std::string, std::string);
+  static void download_file(sockaddr_in, unsigned short, std::string, std::string);
   void send_upload(std::string);
   void send_remove(std::string);
   void exit();

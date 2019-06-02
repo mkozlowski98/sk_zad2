@@ -21,6 +21,7 @@ class Sock {
   void attach_to_port(short port);
   void enable_broadcasting();
   void set_address(char* addr, short port);
+  void copy_address(sockaddr_in, short port);
   void set_timeout(timeval& timeval);
   void tcp_socket();
 };

@@ -46,6 +46,11 @@ void Sock::set_address(char *addr, short port) {
     syserr("inet_aton");
 }
 
+void Sock::copy_address(sockaddr_in addr, short port) {
+  local_addr = addr;
+  local_addr.sin_port = htons(port);
+}
+
 void Sock::set_timeout(timeval &timeout) {
   if (setsockopt(sock_no, SOL_SOCKET, SO_RCVTIMEO, (void *)&timeout, sizeof(timeout)) < 0)
     syserr("setsockopt failed");
