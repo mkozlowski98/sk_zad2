@@ -247,6 +247,7 @@ void Client::choose_server(std::string data, std::string path, uint64_t size) {
   timeout.tv_sec = parameters.timeout / 1000;
   upload_sock.set_timeout(timeout);
   std::string addr_str;
+  bool sent = false;
   for (auto &server: group) {
     addr_str = inet_ntoa(server.addr.sin_addr);
     if (server.size < size) {
@@ -262,11 +263,16 @@ void Client::choose_server(std::string data, std::string path, uint64_t size) {
           if (upload_file(rec_addr, port, path, data)) {
             std::unique_lock lock(display_mutex);
             std::cout << "File " << data << " uploaded (" << addr_str << ":" << port << ")" << std::endl;
+            sent = true;
             break;
           }
         }
       }
     }
+  }
+  if (!sent) {
+    std::unique_lock lock(display_mutex);
+    std::cout << "File " << data << " uploading failed (" << addr_str << ") none of server could upload file" << std::endl;
   }
   close(upload_sock.sock_no);
 }

@@ -37,8 +37,8 @@ void Server::Sender::send_file() {
       syserr("fopen");
     else {
       while (!fd.eof()) {
-        memset(buffer, 0, 1024);
-        fd.read(buffer, 1024);
+        memset(buffer, 0, BUFF_SIZE);
+        fd.read(buffer, BUFF_SIZE);
         if (send(msgsock, (void *)buffer, fd.gcount(), 0) < 0)
           syserr("send in server");
       }
