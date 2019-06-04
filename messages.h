@@ -3,13 +3,16 @@
 
 #include <iostream>
 #include <cstring>
+#define SIMPL_SIZE 18
 #define SIMPL_DATA_SIZE 64489
+#define CMPLX_SIZE 26
 #define CMPLX_DATA_SIZE 64481
+#define UDP_SIZE 65507
 
 /* defined class for sending via udp */
 class __attribute__((__packed__)) Simpl_cmd {
  public:
-  char cmd[11];
+  char cmd[10];
   uint64_t cmd_seq;
   char data[SIMPL_DATA_SIZE];
 
@@ -19,10 +22,10 @@ class __attribute__((__packed__)) Simpl_cmd {
 
 class __attribute__((__packed__)) Cmplx_cmd {
  public:
-  char cmd[11];
+  char cmd[10];
   uint64_t cmd_seq;
-  char data[CMPLX_DATA_SIZE];
   uint64_t param;
+  char data[CMPLX_DATA_SIZE];
 
   Cmplx_cmd() = default;
   Cmplx_cmd(std::string&, uint64_t, uint64_t, std::string&);

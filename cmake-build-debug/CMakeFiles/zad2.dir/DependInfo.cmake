@@ -9,7 +9,6 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/koksu/studies/4_sem/sik/zad2/netstore-client.cpp" "/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-client.cpp.o"
   "/home/koksu/studies/4_sem/sik/zad2/netstore-server.cpp" "/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/netstore-server.cpp.o"
   "/home/koksu/studies/4_sem/sik/zad2/sock.cpp" "/home/koksu/studies/4_sem/sik/zad2/cmake-build-debug/CMakeFiles/zad2.dir/sock.cpp.o"
-
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

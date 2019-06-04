@@ -30,7 +30,7 @@ void Server::Sender::send_file() {
 
   uint64_t port = get_port();
   /* send datagram to client with connect_me message */
-  if (send(udp_sock, client_addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, file)) < 0)
+  if (send(udp_sock, client_addr, Cmplx_cmd(global::cmd_message["CONNECT_ME"], cmd_seq, port, file), CMPLX_SIZE + file.length()) < 0)
     syserr("send in server");
 
   int msgsock = get_msg_sock();
@@ -63,7 +63,7 @@ void Server::Sender::upload_file() {
 
   uint64_t port = get_port();
   /* send positive answer to client */
-  if (send(udp_sock, client_addr, Cmplx_cmd(global::cmd_message["CAN_ADD"], cmd_seq, port, global::empty_str)) < 0)
+  if (send(udp_sock, client_addr, Cmplx_cmd(global::cmd_message["CAN_ADD"], cmd_seq, port, global::empty_str), CMPLX_SIZE) < 0)
     syserr("send in port");
 
   int msgsock = get_msg_sock();
@@ -108,33 +108,41 @@ void Server::clear() {
 void Server::start_listening() {
   list_files();
   connect();
+  char buffer[UDP_SIZE];
+  char msg[10];
   Cmplx_cmd cmplx_cmd{};
-  std::string message;
+  Simpl_cmd simpl_cmd{};
+  ssize_t recv_len;
 
   struct sockaddr_in addr {};
 
   while (global::flag) {
+    memset(buffer, 0, UDP_SIZE);
+    memset(msg, 0, 10);
     memset(&addr, 0, sizeof addr);
     memset(&cmplx_cmd, 0, sizeof(cmplx_cmd));
-    receive(sock.sock_no, addr, cmplx_cmd);
-    message = cmplx_cmd.cmd;
-    if (message == global::cmd_message["HELLO"])
-      hello(be64toh(cmplx_cmd.cmd_seq), addr);
-    else if (message == global::cmd_message["LIST"])
-      send_list(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
-    else if (message == global::cmd_message["GET"])
-      send_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data);
-    else if (message == global::cmd_message["DEL"])
-      remove_file(addr, cmplx_cmd.data);
-    else if (message == global::cmd_message["ADD"])
+    memset(&simpl_cmd, 0, sizeof(simpl_cmd));
+    recv_len = receive(sock.sock_no, addr, buffer);
+    strncpy(msg, buffer, 10);
+    if (msg == global::cmd_message["ADD"]) {
+      memcpy(&cmplx_cmd, buffer, recv_len);
       add_file(be64toh(cmplx_cmd.cmd_seq), addr, cmplx_cmd.data, be64toh(cmplx_cmd.param));
-    else {
+    } else if (msg != global::empty_str){
+      memcpy(&simpl_cmd, buffer, recv_len);
+      if (msg == global::cmd_message["HELLO"])
+        hello(be64toh(simpl_cmd.cmd_seq), addr);
+      else if (msg == global::cmd_message["LIST"])
+        send_list(be64toh(simpl_cmd.cmd_seq), addr, simpl_cmd.data);
+      else if (msg == global::cmd_message["GET"])
+        send_file(be64toh(simpl_cmd.cmd_seq), addr, simpl_cmd.data);
+      else if (msg == global::cmd_message["DEL"])
+        remove_file(addr, simpl_cmd.data);
+    } else {
       if (global::flag) {
         std::string mes("Unknown message");
         print_error(addr, &mes);
       }
     }
-
   }
 
 }
@@ -158,7 +166,7 @@ void Server::list_files() {
 
 void Server::hello(uint64_t cmd_seq, sockaddr_in addr) {
   std::string mcast_addr(parameters.mcast_addr);
-  if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["GOOD_DAY"], cmd_seq, parameters.max_space, mcast_addr)) < 0)
+  if (send(sock.sock_no, addr, Cmplx_cmd(global::cmd_message["GOOD_DAY"], cmd_seq, parameters.max_space, mcast_addr), CMPLX_SIZE + mcast_addr.length()) < 0)
     syserr("send in server");
 }
 
@@ -169,7 +177,7 @@ void Server::send_list(uint64_t cmd_seq, sockaddr_in addr, char *data) {
     for (auto &it: files_list) {
       if (it.find(reg) != std::string::npos) { // check if filename contains reg substring
         if (str_to_send.length() + it.length() > CMPLX_DATA_SIZE) { // send datagram to client if struct is full
-          if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send)) < 0)
+          if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send), SIMPL_SIZE + str_to_send.length()) < 0)
             syserr("send in server");
           str_to_send.clear();
         }
@@ -177,7 +185,7 @@ void Server::send_list(uint64_t cmd_seq, sockaddr_in addr, char *data) {
       }
     }
     if (!str_to_send.empty())
-      if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send)) < 0)
+      if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["MY_LIST"], cmd_seq, str_to_send), SIMPL_SIZE + str_to_send.length()) < 0)
         syserr("send in server");
   }
 
@@ -250,7 +258,7 @@ void Server::handle_remove(std::string path, std::string file) {
 void Server::add_file(uint64_t cmd_seq, sockaddr_in addr, char * file, uint64_t size) {
   std::string file_str(file);
   if (size > parameters.max_space || check_file(file_str)) {
-    if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["NO_WAY"], cmd_seq, file_str)) < 0)
+    if (send(sock.sock_no, addr, Simpl_cmd(global::cmd_message["NO_WAY"], cmd_seq, file_str), SIMPL_SIZE + file_str.length()) < 0)
       syserr("send in server");
   } else {
     std::string path = std::string(parameters.shrd_fldr) + file_str;

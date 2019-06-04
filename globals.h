@@ -65,10 +65,10 @@ ssize_t receive(int sock, struct sockaddr_in &addr, T& cmd) {
 
 /* send datagram with T object to address addr */
 template <typename T>
-ssize_t send(int sock, struct sockaddr_in addr, T cmd) {
+ssize_t send(int sock, struct sockaddr_in addr, T cmd, size_t len) {
   socklen_t rcva_len;
   rcva_len = (socklen_t) sizeof(addr);
-  return sendto(sock, (char *)&cmd, sizeof cmd, 0, (struct sockaddr *)&addr, rcva_len);
+  return sendto(sock, (char *)&cmd, len, 0, (struct sockaddr *)&addr, rcva_len);
 }
 
 /* return how many milliseconds passed since time */
