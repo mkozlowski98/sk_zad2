@@ -48,7 +48,6 @@ class Client {
   std::vector<Client::File_Info> files;
   /* keeps all created threads */
   std::vector<std::thread> threads;
-  char buffer[UDP_SIZE];
 
   /* return size of file specified by argument */
   uint64_t get_size(std::string);
