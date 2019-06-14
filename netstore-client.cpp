@@ -169,6 +169,9 @@ void Client::send_fetch(std::string data) {
         thread.detach();
         threads.emplace_back(std::move(thread));
       }
+    } else {
+      std::unique_lock lock(display_mutex);
+      std::cout << "File " << data << " downloading failed (" << inet_ntoa(fetch_sock.local_addr.sin_addr) << ") server doesn't have this file" << std::endl;
     }
     close(fetch_sock.sock_no);
   } else {
